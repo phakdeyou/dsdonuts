@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Drink Menu — D's Donuts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--cream:#FDF0F3;--blush:#F5B8C4;--rose:#E8637A;--deep:#C23F58;--dusty:#D4869A;--brown:#6B2D3E;--espresso:#3A1020;--pink-lt:#FCE8ED;--pink-md:#F7D0D9;--gold:#C9933A;--white:#FFFAFC;--jade:#5C8C78}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--espresso);color:var(--cream);font-family:'Lato',sans-serif;font-weight:300;overflow-x:hidden}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 36px;background:rgba(58,16,32,0.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(232,99,122,0.15);transition:box-shadow 0.3s}
+    nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.3)}
+    .nav-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.5rem;color:var(--blush);text-decoration:none}
+    .nav-logo span{font-style:normal;font-size:0.55rem;font-family:'Lato',sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--dusty);display:block;margin-top:-3px}
+    .nav-links{display:flex;gap:28px;list-style:none}
+    .nav-links a{text-decoration:none;font-size:0.66rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--blush);opacity:0.6;transition:opacity 0.2s}
+    .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--rose)}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--blush);border-radius:2px}
+    .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--espresso);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:36px}
+    .mobile-menu.open{display:flex}
+    .mobile-menu a{font-family:'Playfair Display',serif;font-size:2rem;color:var(--blush);text-decoration:none;transition:color 0.2s}
+    .mobile-menu a:hover{color:var(--rose)}
+    .mobile-close{position:absolute;top:22px;right:28px;background:none;border:none;font-size:2rem;color:var(--blush);cursor:pointer}
+
+    /* HERO */
+    .page-hero{padding:140px 24px 70px;text-align:center;background:
+      radial-gradient(ellipse 70% 50% at 85% 15%,rgba(232,99,122,0.2) 0%,transparent 55%),
+      radial-gradient(ellipse 50% 50% at 10% 80%,rgba(92,140,120,0.15) 0%,transparent 55%),var(--espresso);
+      position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;border:40px solid rgba(232,99,122,0.07);top:5%;left:-8%;pointer-events:none}
+    .page-hero::after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;border:30px solid rgba(201,147,58,0.07);bottom:3%;right:3%;pointer-events:none}
+    .page-hero-eyebrow{font-size:0.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--dusty);margin-bottom:14px;opacity:0;animation:fadeUp 0.7s ease forwards 0.1s}
+    .page-hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,8vw,5rem);color:var(--cream);line-height:1.05;margin-bottom:14px;opacity:0;animation:fadeUp 0.7s ease forwards 0.25s}
+    .page-hero-title em{font-style:italic;color:var(--blush)}
+    .page-hero-sub{font-family:'Noto Serif SC',serif;font-size:1rem;color:var(--dusty);letter-spacing:1px;opacity:0;animation:fadeUp 0.7s ease forwards 0.4s}
+    .olympic-accent{display:flex;justify-content:center;margin:28px 0 0;opacity:0;animation:fadeUp 0.7s ease forwards 0.5s}
+
+    /* HAPPY HOUR STRIP */
+    .hh-strip{background:linear-gradient(135deg,var(--rose) 0%,var(--deep) 100%);padding:18px 24px;text-align:center}
+    .hh-strip p{font-family:'Playfair Display',serif;font-size:1rem;color:var(--white);letter-spacing:0.5px}
+    .hh-strip em{font-style:italic}
+    .hh-strip strong{font-weight:700}
+
+    /* DRINKS MENU */
+    .drinks-menu{padding:70px 24px 90px;max-width:1100px;margin:0 auto}
+    .cat-header{display:flex;align-items:center;gap:20px;margin-bottom:36px}
+    .cat-line{flex:1;height:1px;background:linear-gradient(to right,var(--rose),transparent);opacity:0.2}
+    .cat-title{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--cream);white-space:nowrap}
+    .cat-title em{font-style:italic;color:var(--blush)}
+    .menu-category{margin-bottom:62px}
+
+    .drinks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .drink-card{border-radius:20px;padding:30px 22px;text-align:center;position:relative;overflow:hidden;transition:transform 0.25s,box-shadow 0.25s}
+    .drink-card:nth-child(1){background:linear-gradient(155deg,rgba(253,240,243,0.08),rgba(245,184,196,0.14));border:1px solid rgba(245,184,196,0.15)}
+    .drink-card:nth-child(2){background:linear-gradient(155deg,rgba(201,147,58,0.08),rgba(245,184,196,0.1));border:1px solid rgba(201,147,58,0.15)}
+    .drink-card:nth-child(3){background:linear-gradient(155deg,rgba(92,140,120,0.1),rgba(245,184,196,0.07));border:1px solid rgba(92,140,120,0.2)}
+    .drink-card:nth-child(4){background:linear-gradient(155deg,rgba(232,99,122,0.08),rgba(194,63,88,0.1));border:1px solid rgba(232,99,122,0.15)}
+    .drink-card:nth-child(5){background:linear-gradient(155deg,rgba(245,184,196,0.07),rgba(212,134,154,0.12));border:1px solid rgba(212,134,154,0.15)}
+    .drink-card:nth-child(6){background:linear-gradient(155deg,rgba(201,147,58,0.06),rgba(232,99,122,0.09));border:1px solid rgba(201,147,58,0.13)}
+    .drink-card::before{content:'';position:absolute;bottom:-16px;right:-16px;width:70px;height:70px;border-radius:50%;border:11px solid rgba(245,184,196,0.08);pointer-events:none}
+    .drink-card:hover{transform:translateY(-5px);box-shadow:0 14px 36px rgba(0,0,0,0.3)}
+    .drink-icon{width:60px;height:60px;margin:0 auto 14px;display:block}
+    .drink-name{font-family:'Playfair Display',serif;font-size:1rem;color:var(--cream);margin-bottom:7px}
+    .drink-desc{font-size:0.81rem;line-height:1.65;color:var(--blush);opacity:0.65;margin-bottom:12px}
+    .drink-tag{display:inline-block;background:rgba(245,184,196,0.14);color:var(--blush);font-size:0.56rem;letter-spacing:2px;text-transform:uppercase;padding:4px 11px;border-radius:20px}
+    .drink-tag.hh{background:rgba(232,99,122,0.28);color:#FFD9CE}
+    .drink-price{font-family:'Playfair Display',serif;font-size:1rem;color:var(--blush);font-style:italic;margin-top:10px}
+    .drink-price .hh-price{color:var(--rose);font-size:0.82rem;text-decoration:line-through;opacity:0.6;margin-left:6px}
+
+    footer{background:rgba(0,0,0,0.4);color:var(--blush);text-align:center;padding:40px 24px;border-top:1px solid rgba(245,184,196,0.1)}
+    .footer-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.6rem;color:var(--blush);margin-bottom:5px}
+    .footer-sub{font-family:'Noto Serif SC',serif;font-size:0.66rem;letter-spacing:3px;color:var(--blush);opacity:0.28;margin-bottom:5px}
+    .footer-tagline{font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;opacity:0.3;margin-bottom:20px}
+    .footer-links{display:flex;gap:20px;justify-content:center;list-style:none;margin-bottom:18px}
+    .footer-links a{font-size:0.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--blush);opacity:0.38;text-decoration:none;transition:opacity 0.2s}
+    .footer-links a:hover{opacity:1}
+    .footer-copy{font-size:0.66rem;opacity:0.2}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .reveal{opacity:0;transform:translateY(26px);transition:opacity 0.65s ease,transform 0.65s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    @media(max-width:768px){.nav-links{display:none}.hamburger{display:flex}.drinks-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.drinks-grid{grid-template-columns:1fr}nav{padding:15px 18px}}
+  </style>
+</head>
+<body>
+  <nav id="main-nav">
+    <a href="index.html" class="nav-logo">D's Donuts<span>Corona, California</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ds-menu-donuts.html">Donuts</a></li>
+      <li><a href="ds-menu-drinks.html" class="active">Drinks</a></li>
+      <li><a href="ds-catering.html">Catering</a></li>
+      <li><a href="index.html#visit">Visit Us</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="mobile-close" id="mobile-close">✕</button>
+    <a href="index.html" class="mobile-link">Home</a>
+    <a href="ds-menu-donuts.html" class="mobile-link">Donuts</a>
+    <a href="ds-menu-drinks.html" class="mobile-link">Drinks</a>
+    <a href="ds-catering.html" class="mobile-link">Catering</a>
+    <a href="index.html#visit" class="mobile-link">Visit Us</a>
+  </div>
+
+  <div class="page-hero">
+    <p class="page-hero-eyebrow">Crafted In-House Daily</p>
+    <h1 class="page-hero-title">Specialty <em>Drinks</em></h1>
+    <p class="page-hero-sub">Happy Hour every day · 2:00 pm – 6:00 pm</p>
+    <div class="olympic-accent">
+      <svg width="160" height="44" viewBox="0 0 160 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="20" cy="20" r="16" stroke="#0085C7" stroke-width="4.5" fill="none" opacity="0.7"/>
+        <circle cx="52" cy="20" r="16" stroke="#F4C300" stroke-width="4.5" fill="none" opacity="0.7"/>
+        <circle cx="84" cy="20" r="16" stroke="#F5B8C4" stroke-width="4.5" fill="none" opacity="0.7"/>
+        <circle cx="116" cy="20" r="16" stroke="#009F6B" stroke-width="4.5" fill="none" opacity="0.7"/>
+        <circle cx="148" cy="20" r="16" stroke="#DF0024" stroke-width="4.5" fill="none" opacity="0.7"/>
+        <text x="80" y="40" text-anchor="middle" font-family="Lato,sans-serif" font-size="6.5" letter-spacing="2" fill="#D4869A" opacity="0.6">CORONA · PRIDE</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hh-strip">
+    <p><strong>Happy Hour:</strong> <em>Daily from 2:00 pm to 6:00 pm</em> — discounted pricing on select drinks. Ask us what's on special!</p>
+  </div>
+
+  <div class="drinks-menu">
+    <!-- HOT DRINKS -->
+    <div class="menu-category reveal">
+      <div class="cat-header">
+        <div class="cat-line"></div>
+        <h2 class="cat-title"><em>Hot</em> Drinks</h2>
+        <div class="cat-line" style="background:linear-gradient(to left,var(--rose),transparent)"></div>
+      </div>
+      <div class="drinks-grid">
+        <div class="drink-card">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="30" cy="50" rx="22" ry="5" fill="#C9A98A"/><path d="M14 22 L17 48 Q17 52 30 52 Q43 52 43 48 L46 22 Z" fill="#FDF6EE" stroke="#C9A98A" stroke-width="1.2"/><ellipse cx="30" cy="22" rx="16" ry="5" fill="#6B3F2A"/><path d="M30 19 Q26 22 30 25 Q34 22 30 19" fill="none" stroke="#C9A98A" stroke-width="1.2" stroke-linecap="round"/><line x1="30" y1="19" x2="30" y2="25" stroke="#C9A98A" stroke-width="0.8"/><path d="M43 28 Q52 28 52 35 Q52 42 43 42" fill="none" stroke="#C9A98A" stroke-width="2" stroke-linecap="round"/></svg>
+          <div class="drink-name">Honey Lavender Latte</div>
+          <div class="drink-desc">Espresso with house lavender syrup, oat milk, and a drizzle of local honey. Floral and warming.</div>
+          <span class="drink-tag">House Specialty</span>
+          <div class="drink-price">$5.50</div>
+        </div>
+        <div class="drink-card">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="30" cy="50" rx="22" ry="5" fill="#C9A98A"/><path d="M14 22 L17 48 Q17 52 30 52 Q43 52 43 48 L46 22 Z" fill="#FDF6EE" stroke="#C9A98A" stroke-width="1.2"/><ellipse cx="30" cy="22" rx="16" ry="5" fill="#3A1020"/><path d="M43 28 Q52 28 52 35 Q52 42 43 42" fill="none" stroke="#C9A98A" stroke-width="2" stroke-linecap="round"/></svg>
+          <div class="drink-name">Classic Latte</div>
+          <div class="drink-desc">Double espresso with steamed milk. Available with any house syrup — vanilla, caramel, or hazelnut.</div>
+          <span class="drink-tag">Always Available</span>
+          <div class="drink-price">$4.50</div>
+        </div>
+        <div class="drink-card">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="30" cy="50" rx="22" ry="5" fill="#C9A98A"/><path d="M14 22 L17 48 Q17 52 30 52 Q43 52 43 48 L46 22 Z" fill="#FDF6EE" stroke="#4A7A5C" stroke-width="1.2"/><ellipse cx="30" cy="22" rx="16" ry="5" fill="#4A7A5C"/><path d="M43 28 Q52 28 52 35 Q52 42 43 42" fill="none" stroke="#C9A98A" stroke-width="2" stroke-linecap="round"/></svg>
+          <div class="drink-name">Hot Matcha Latte</div>
+          <div class="drink-desc">Ceremonial grade matcha whisked smooth with steamed oat milk and a touch of honey.</div>
+          <span class="drink-tag">Asian Inspired</span>
+          <div class="drink-price">$5.00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ICED DRINKS -->
+    <div class="menu-category reveal">
+      <div class="cat-header">
+        <div class="cat-line"></div>
+        <h2 class="cat-title"><em>Iced</em> Drinks</h2>
+        <div class="cat-line" style="background:linear-gradient(to left,var(--rose),transparent)"></div>
+      </div>
+      <div class="drinks-grid">
+        <div class="drink-card">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17 12 L20 52 Q20 56 30 56 Q40 56 40 52 L43 12 Z" fill="none" stroke="#C9A98A" stroke-width="1.5"/><path d="M20.5 38 L21.5 52 Q21.5 55 30 55 Q38.5 55 38.5 52 L39.5 38 Z" fill="#8B9E5A" opacity="0.7"/><path d="M19 24 L20.5 38 L39.5 38 L41 24 Z" fill="#F2C4B0" opacity="0.8"/><path d="M17.5 12 L19 24 L41 24 L42.5 12 Z" fill="#FDF6EE" opacity="0.9"/><rect x="26" y="4" width="3" height="34" rx="1.5" fill="#D97B6C" opacity="0.85"/></svg>
+          <div class="drink-name">Strawberry Matcha</div>
+          <div class="drink-desc">Ceremonial matcha layered over house strawberry milk, served iced. Beautiful and refreshing.</div>
+          <span class="drink-tag">Fan Favorite</span>
+          <div class="drink-price">$6.00</div>
+        </div>
+        <div class="drink-card">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 16 L19 52 Q19 55 30 55 Q41 55 41 52 L44 16 Z" fill="#FDF6EE" stroke="#C9A98A" stroke-width="1.2"/><path d="M18.5 38 L20.5 52 Q20.5 54.5 30 54.5 Q39.5 54.5 39.5 52 L41.5 38 Z" fill="#6B3F2A" opacity="0.8"/><path d="M17.5 26 L18.5 38 L41.5 38 L42.5 26 Z" fill="#C9A98A" opacity="0.6"/><rect x="21" y="28" width="7" height="6" rx="1.5" fill="rgba(255,255,255,0.7)" stroke="#C9A98A" stroke-width="0.6"/><rect x="34" y="6" width="3" height="36" rx="1.5" fill="#D97B6C"/><path d="M14 16 Q14 12 30 12 Q46 12 46 16 L44 16 Q44 14 30 14 Q16 14 16 16 Z" fill="#C9A98A"/></svg>
+          <div class="drink-name">Brown Sugar Horchata</div>
+          <div class="drink-desc">Creamy horchata blended with cold brew and cinnamon brown sugar. Rich and smooth.</div>
+          <span class="drink-tag hh">Happy Hour Deal</span>
+          <div class="drink-price">$5.50 <span class="hh-price">$6.50</span></div>
+        </div>
+        <div class="drink-card">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="16" y="14" width="28" height="40" rx="4" fill="none" stroke="#C9A98A" stroke-width="1.5"/><rect x="14" y="10" width="32" height="6" rx="3" fill="#C9A98A" opacity="0.4"/><rect x="17.5" y="28" width="25" height="25" rx="3" fill="#3A1F10" opacity="0.75"/><path d="M17.5 28 Q22 24 30 26 Q38 24 42.5 28 L42.5 32 Q38 29 30 31 Q22 29 17.5 32 Z" fill="#FDF6EE" opacity="0.9"/><circle cx="30" cy="20" r="6" fill="#F2C4B0" stroke="#D97B6C" stroke-width="1"/><line x1="30" y1="14" x2="30" y2="26" stroke="#D97B6C" stroke-width="0.7"/><line x1="24" y1="20" x2="36" y2="20" stroke="#D97B6C" stroke-width="0.7"/></svg>
+          <div class="drink-name">Citrus Cold Brew</div>
+          <div class="drink-desc">Slow-steeped cold brew with a splash of orange and vanilla sweet cream on top.</div>
+          <span class="drink-tag hh">Happy Hour Deal</span>
+          <div class="drink-price">$5.00 <span class="hh-price">$6.00</span></div>
+        </div>
+        <div class="drink-card">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 16 L19 52 Q19 55 30 55 Q41 55 41 52 L44 16 Z" fill="rgba(245,184,196,0.1)" stroke="#C9A98A" stroke-width="1.2"/><path d="M18.5 28 L19.5 52 Q19.5 54.5 30 54.5 Q40.5 54.5 40.5 52 L41.5 28 Z" fill="#D97B6C" opacity="0.4"/><path d="M17.5 16 L18.5 28 L41.5 28 L42.5 16 Z" fill="#FDF6EE" opacity="0.8"/><rect x="21" y="20" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.6)" stroke="#C9A98A" stroke-width="0.5"/><rect x="31" y="22" width="5" height="4" rx="1.5" fill="rgba(255,255,255,0.6)" stroke="#C9A98A" stroke-width="0.5"/><rect x="34" y="6" width="3" height="28" rx="1.5" fill="#5C8C78"/><path d="M14 16 Q14 12 30 12 Q46 12 46 16 L44 16 Q44 14 30 14 Q16 14 16 16 Z" fill="#C9A98A"/></svg>
+          <div class="drink-name">Iced Lavender Latte</div>
+          <div class="drink-desc">Our honey lavender latte served over ice. Refreshing floral espresso with oat milk.</div>
+          <span class="drink-tag">House Specialty</span>
+          <div class="drink-price">$5.50</div>
+        </div>
+        <div class="drink-card">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 10 L20 54 Q20 57 30 57 Q40 57 40 54 L44 10 Z" fill="none" stroke="#C9A98A" stroke-width="1.5"/><path d="M17.5 18 L20.5 54 Q20.5 56.5 30 56.5 Q39.5 56.5 39.5 54 L42.5 18 Z" fill="#FDF6EE" opacity="0.85"/><ellipse cx="30" cy="18" rx="13" ry="3.5" fill="#C9A98A" opacity="0.5"/><rect x="36" y="6" width="3" height="24" rx="1.5" fill="#6B3F2A" transform="rotate(10,37,18)"/></svg>
+          <div class="drink-name">Classic Horchata</div>
+          <div class="drink-desc">Traditional house-made horchata. Cool, sweet, and spiced with cinnamon. Always available.</div>
+          <span class="drink-tag">Always Available</span>
+          <div class="drink-price">$4.50</div>
+        </div>
+        <div class="drink-card">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 16 L19 52 Q19 55 30 55 Q41 55 41 52 L44 16 Z" fill="rgba(245,184,196,0.08)" stroke="#C9A98A" stroke-width="1.2"/><path d="M17.5 28 L19.5 52 Q19.5 54.5 30 54.5 Q40.5 54.5 40.5 52 L42.5 28 Z" fill="#F2C4B0" opacity="0.55"/><rect x="33" y="6" width="3" height="28" rx="1.5" fill="#C9A98A"/><path d="M14 16 Q14 12 30 12 Q46 12 46 16 L44 16 Q44 14 30 14 Q16 14 16 16 Z" fill="#C9A98A"/></svg>
+          <div class="drink-name">Seasonal Special</div>
+          <div class="drink-desc">Ask us what we're crafting this week — we love experimenting with seasonal and local flavors.</div>
+          <span class="drink-tag">Rotating</span>
+          <div class="drink-price">$5.00 – $6.50</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HAPPY HOUR NOTE -->
+    <div style="background:linear-gradient(135deg,rgba(232,99,122,0.15),rgba(194,63,88,0.1));border:1px solid rgba(232,99,122,0.25);border-radius:20px;padding:36px 32px;text-align:center;margin-bottom:60px" class="reveal">
+      <p style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--cream);margin-bottom:10px">Happy Hour <em style="font-style:italic;color:var(--blush)">Every Day</em></p>
+      <p style="font-size:0.88rem;color:var(--blush);opacity:0.72;line-height:1.75;max-width:500px;margin:0 auto">2:00 pm – 6:00 pm daily · Discounted pricing on select iced drinks · Ask us what's on special when you come in. Happy hour is our way of saying thank you for being our community.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">D's Donuts</div>
+    <div class="footer-sub">ដូណាត់ស្រស់ · Corona, CA</div>
+    <p class="footer-tagline">Cambodian Owned · Family Run · Est. with Love</p>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ds-menu-donuts.html">Donuts</a></li>
+      <li><a href="ds-menu-drinks.html">Drinks</a></li>
+      <li><a href="ds-catering.html">Catering</a></li>
+      <li><a href="index.html#visit">Visit</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 D's Donuts. Made fresh daily in Corona, CA.</p>
+  </footer>
+
+  <script>
+    const nav=document.getElementById('main-nav');
+    window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>20));
+    document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobile-menu').classList.add('open'));
+    document.getElementById('mobile-close').addEventListener('click',()=>document.getElementById('mobile-menu').classList.remove('open'));
+    document.querySelectorAll('.mobile-link').forEach(l=>l.addEventListener('click',()=>document.getElementById('mobile-menu').classList.remove('open')));
+    const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}}),{threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  </script>
+</body>
+</html>
