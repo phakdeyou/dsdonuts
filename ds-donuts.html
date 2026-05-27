@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D's Donuts — Corona, CA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:    #FDF0F3;
+      --blush:    #F5B8C4;
+      --rose:     #E8637A;
+      --deep:     #C23F58;
+      --dusty:    #D4869A;
+      --brown:    #6B2D3E;
+      --espresso: #3A1020;
+      --pink-lt:  #FCE8ED;
+      --pink-md:  #F7D0D9;
+      --gold:     #C9933A;
+      --white:    #FFFAFC;
+      --jade:     #5C8C78;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--espresso);
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── ASIAN LOTUS PATTERN OVERLAY (SVG data-uri) ── */
+    .lotus-bg {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ccircle cx='40' cy='40' r='2' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.18'/%3E%3Cellipse cx='40' cy='28' rx='5' ry='9' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.13'/%3E%3Cellipse cx='40' cy='28' rx='5' ry='9' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.13' transform='rotate(45 40 40)'/%3E%3Cellipse cx='40' cy='28' rx='5' ry='9' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.13' transform='rotate(90 40 40)'/%3E%3Cellipse cx='40' cy='28' rx='5' ry='9' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.13' transform='rotate(135 40 40)'/%3E%3C/svg%3E");
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 36px;
+      background: rgba(253,240,243,0.93);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(232,99,122,0.15);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 2px 20px rgba(107,45,62,0.12); }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.6rem;
+      color: var(--brown);
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span {
+      font-style: normal;
+      font-size: 0.58rem;
+      font-family: 'Lato', sans-serif;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--dusty);
+      display: block;
+      margin-top: -3px;
+    }
+
+    .nav-links { display: flex; gap: 30px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--brown);
+      opacity: 0.72;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--rose); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--brown); border-radius: 2px; transition: all 0.3s; }
+
+    .mobile-menu {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--cream); z-index: 200;
+      flex-direction: column; align-items: center; justify-content: center; gap: 40px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--brown); text-decoration: none; transition: color 0.2s; }
+    .mobile-menu a:hover { color: var(--rose); }
+    .mobile-close { position: absolute; top: 22px; right: 28px; background: none; border: none; font-size: 2rem; color: var(--brown); cursor: pointer; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 120px 24px 60px;
+      background:
+        radial-gradient(ellipse 80% 50% at 85% 15%, rgba(245,184,196,0.45) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 60% at 10% 85%, rgba(252,232,237,0.7) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(248,210,220,0.2) 0%, transparent 70%),
+        var(--cream);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      border: 40px solid rgba(232,99,122,0.07);
+      top: 5%; left: -8%;
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      border: 50px solid rgba(212,134,154,0.06);
+      bottom: -5%; right: -8%;
+      pointer-events: none;
+    }
+    /* inner decorative ring */
+    .hero-ring {
+      position: absolute;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      border: 22px solid rgba(201,147,58,0.08);
+      top: 20%; right: 10%;
+      pointer-events: none;
+    }
+
+    .hero-inner { max-width: 680px; position: relative; z-index: 1; }
+
+    .hero-eyebrow {
+      font-size: 0.62rem; letter-spacing: 5px; text-transform: uppercase;
+      color: var(--dusty); margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+    /* Cambodian script accent */
+    .hero-khmer {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.85rem;
+      color: var(--rose);
+      opacity: 0;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+      animation: fadeUp 0.8s ease forwards 0.15s;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 10vw, 5.8rem);
+      line-height: 1.05; color: var(--brown); margin-bottom: 8px;
+      opacity: 0; animation: fadeUp 0.8s ease forwards 0.4s;
+    }
+    .hero-title em { font-style: italic; color: var(--rose); }
+    .hero-sub {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.15rem; color: var(--dusty); margin-bottom: 28px;
+      letter-spacing: 1px;
+      opacity: 0; animation: fadeUp 0.8s ease forwards 0.6s;
+    }
+    .hero-desc {
+      font-size: 0.95rem; line-height: 1.8; color: var(--espresso);
+      max-width: 500px; margin: 0 auto 40px;
+      opacity: 0; animation: fadeUp 0.8s ease forwards 0.8s;
+    }
+    .hero-buttons {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.8s ease forwards 1s;
+    }
+
+    .btn-primary {
+      background: var(--rose); color: var(--white);
+      padding: 14px 32px; border-radius: 60px;
+      font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; text-decoration: none;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--deep); transform: translateY(-2px); }
+
+    .btn-outline {
+      border: 1.5px solid var(--rose); color: var(--rose);
+      padding: 14px 32px; border-radius: 60px;
+      font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; text-decoration: none;
+      transition: all 0.25s;
+    }
+    .btn-outline:hover { background: var(--rose); color: var(--white); transform: translateY(-2px); }
+
+    .scroll-hint {
+      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      opacity: 0; animation: fadeUp 1s ease forwards 1.4s;
+    }
+    .scroll-hint span { font-size: 0.58rem; letter-spacing: 3px; text-transform: uppercase; color: var(--dusty); }
+    .scroll-hint::after {
+      content: ''; display: block; width: 1px; height: 36px;
+      background: linear-gradient(to bottom, var(--dusty), transparent);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-band {
+      background: var(--brown); color: var(--blush);
+      padding: 14px 0; overflow: hidden; white-space: nowrap;
+    }
+    .marquee-track { display: inline-flex; gap: 0; animation: marquee 20s linear infinite; }
+    .marquee-track span {
+      font-family: 'Noto Serif SC', serif; font-size: 0.95rem;
+      padding: 0 40px; opacity: 0.9; letter-spacing: 1px;
+    }
+    .marquee-track .dot { opacity: 0.35; font-style: normal; font-size: 0.5rem; vertical-align: middle; padding: 0 4px; }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 90px 24px; }
+
+    .section-label { font-size: 0.6rem; letter-spacing: 5px; text-transform: uppercase; color: var(--dusty); margin-bottom: 14px; }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem); color: var(--brown); line-height: 1.2; margin-bottom: 18px;
+    }
+    .section-title em { font-style: italic; color: var(--rose); }
+    .section-body { font-size: 1rem; line-height: 1.85; color: var(--espresso); opacity: 0.75; max-width: 540px; }
+
+    /* ── ABOUT ── */
+    #about {
+      background:
+        radial-gradient(ellipse 70% 50% at 0% 50%, rgba(245,184,196,0.2) 0%, transparent 60%),
+        var(--cream);
+    }
+    .about {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .about-visual { position: relative; }
+    .about-img-frame {
+      width: 100%; aspect-ratio: 4/5;
+      border-radius: 120px 20px 120px 20px;
+      background: linear-gradient(160deg, var(--blush) 0%, var(--pink-md) 50%, var(--pink-lt) 100%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .about-img-frame::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cellipse cx='30' cy='18' rx='4' ry='8' fill='none' stroke='%23C23F58' stroke-width='0.5' opacity='0.12'/%3E%3Cellipse cx='30' cy='18' rx='4' ry='8' fill='none' stroke='%23C23F58' stroke-width='0.5' opacity='0.12' transform='rotate(60 30 30)'/%3E%3Cellipse cx='30' cy='18' rx='4' ry='8' fill='none' stroke='%23C23F58' stroke-width='0.5' opacity='0.12' transform='rotate(120 30 30)'/%3E%3C/svg%3E");
+    }
+    .about-img-frame::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 30% 70%, rgba(194,63,88,0.1), transparent 60%);
+    }
+    .about-badge {
+      position: absolute; bottom: -16px; right: -16px;
+      background: var(--rose); color: var(--white);
+      width: 108px; height: 108px; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: 'Noto Serif SC', serif; text-align: center; font-size: 0.68rem;
+      line-height: 1.5; box-shadow: 0 8px 28px rgba(232,99,122,0.4);
+      z-index: 2;
+    }
+
+    /* ── HERITAGE BANNER ── */
+    .heritage-section {
+      background: linear-gradient(135deg, var(--brown) 0%, #4A1828 100%);
+      padding: 70px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .heritage-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect x='48' y='10' width='4' height='30' rx='2' fill='%23E8637A' opacity='0.08'/%3E%3Crect x='48' y='10' width='4' height='30' rx='2' fill='%23E8637A' opacity='0.08' transform='rotate(45 50 50)'/%3E%3Crect x='48' y='10' width='4' height='30' rx='2' fill='%23E8637A' opacity='0.08' transform='rotate(90 50 50)'/%3E%3Crect x='48' y='10' width='4' height='30' rx='2' fill='%23E8637A' opacity='0.08' transform='rotate(135 50 50)'/%3E%3C/svg%3E");
+    }
+    .heritage-inner {
+      max-width: 900px; margin: 0 auto; text-align: center; position: relative; z-index: 1;
+    }
+    .heritage-label {
+      font-size: 0.6rem; letter-spacing: 5px; text-transform: uppercase;
+      color: var(--blush); opacity: 0.6; margin-bottom: 16px;
+    }
+    .heritage-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      color: var(--cream); line-height: 1.2; margin-bottom: 24px;
+    }
+    .heritage-title em { font-style: italic; color: var(--blush); }
+    .heritage-khmer {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.1rem; color: var(--blush); opacity: 0.55;
+      letter-spacing: 3px; margin-bottom: 28px; display: block;
+    }
+    .heritage-body {
+      font-size: 1rem; line-height: 1.9; color: var(--blush); opacity: 0.8;
+      max-width: 700px; margin: 0 auto 32px;
+    }
+    .heritage-pills {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+    .heritage-pill {
+      background: rgba(245,184,196,0.15);
+      border: 1px solid rgba(245,184,196,0.3);
+      border-radius: 40px;
+      padding: 7px 20px;
+      font-size: 0.62rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--blush); opacity: 0.85;
+    }
+    .heritage-divider {
+      width: 60px; height: 2px;
+      background: linear-gradient(to right, transparent, var(--rose), transparent);
+      margin: 0 auto 28px;
+    }
+
+    /* ── FLAVORS GRID ── */
+    .flavors-section {
+      background: var(--pink-lt);
+      position: relative;
+    }
+    .flavors-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ccircle cx='40' cy='40' r='2' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.12'/%3E%3Cellipse cx='40' cy='28' rx='5' ry='9' fill='none' stroke='%23E8637A' stroke-width='0.35' opacity='0.08'/%3E%3Cellipse cx='40' cy='28' rx='5' ry='9' fill='none' stroke='%23E8637A' stroke-width='0.35' opacity='0.08' transform='rotate(60 40 40)'/%3E%3Cellipse cx='40' cy='28' rx='5' ry='9' fill='none' stroke='%23E8637A' stroke-width='0.35' opacity='0.08' transform='rotate(120 40 40)'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .flavors-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+    .flavors-header { text-align: center; margin-bottom: 56px; }
+    .flavors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+
+    .flavor-card {
+      border-radius: 24px;
+      padding: 36px 24px;
+      text-align: center;
+      transition: transform 0.28s, box-shadow 0.28s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    /* gradient backgrounds per card */
+    .flavor-card:nth-child(1) { background: linear-gradient(160deg, #fff5f7 0%, #fce8ed 100%); }
+    .flavor-card:nth-child(2) { background: linear-gradient(160deg, #fce8ed 0%, #f9d5de 100%); }
+    .flavor-card:nth-child(3) { background: linear-gradient(160deg, #f5ebe0 0%, #ecddd0 100%); }
+    .flavor-card:nth-child(4) { background: linear-gradient(160deg, #fffaec 0%, #fdf0da 100%); }
+    .flavor-card:nth-child(5) { background: linear-gradient(160deg, #f0f7f4 0%, #dff0e8 100%); }
+    .flavor-card:nth-child(6) { background: linear-gradient(160deg, #f7f0fb 0%, #ece0f5 100%); }
+
+    /* subtle petal watermark on each card */
+    .flavor-card::before {
+      content: '';
+      position: absolute; bottom: -20px; right: -20px;
+      width: 100px; height: 100px; border-radius: 50%;
+      border: 16px solid rgba(232,99,122,0.07);
+      pointer-events: none;
+    }
+    .flavor-card:hover { transform: translateY(-6px); box-shadow: 0 18px 44px rgba(107,45,62,0.14); }
+
+    .flavor-icon { width: 64px; height: 64px; margin: 0 auto 16px; display: block; }
+    .drink-icon { width: 60px; height: 60px; margin: 0 auto 14px; display: block; }
+
+    .flavor-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--brown); margin-bottom: 8px; }
+    .flavor-desc { font-size: 0.83rem; line-height: 1.6; color: var(--espresso); opacity: 0.62; }
+    .flavor-tag {
+      display: inline-block; margin-top: 14px;
+      background: rgba(232,99,122,0.12); color: var(--deep);
+      font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 20px;
+    }
+
+    /* ── HAPPY HOUR BANNER ── */
+    .happy-hour-banner {
+      background: linear-gradient(135deg, var(--rose) 0%, var(--deep) 100%);
+      color: var(--white); text-align: center; padding: 22px 24px;
+      position: relative; overflow: hidden;
+    }
+    .happy-hour-banner::before {
+      content: '· · · · · · · · · · · · · · · · · · · ·';
+      position: absolute; font-size: 1.4rem; opacity: 0.12;
+      top: 50%; left: -10px; transform: translateY(-50%);
+      white-space: nowrap; letter-spacing: 20px; pointer-events: none;
+    }
+    .happy-hour-inner {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;
+    }
+    .hh-badge {
+      background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.4);
+      border-radius: 40px; padding: 6px 18px;
+      font-size: 0.6rem; letter-spacing: 4px; text-transform: uppercase; font-weight: 700;
+    }
+    .hh-text { font-family: 'Playfair Display', serif; font-size: clamp(1rem, 3vw, 1.3rem); }
+    .hh-text em { font-style: italic; }
+    .hh-time { font-size: 0.75rem; letter-spacing: 2px; opacity: 0.85; text-transform: uppercase; }
+
+    /* ── DRINKS SECTION ── */
+    .drinks-section {
+      background: var(--espresso);
+      position: relative; overflow: hidden;
+    }
+    .drinks-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='3' fill='none' stroke='%23E8637A' stroke-width='0.5' opacity='0.1'/%3E%3Cellipse cx='50' cy='32' rx='6' ry='12' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.07'/%3E%3Cellipse cx='50' cy='32' rx='6' ry='12' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.07' transform='rotate(60 50 50)'/%3E%3Cellipse cx='50' cy='32' rx='6' ry='12' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.07' transform='rotate(120 50 50)'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .drinks-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+    .drinks-header { text-align: center; margin-bottom: 56px; }
+    .drinks-header .section-label { color: var(--blush); opacity: 0.55; }
+    .drinks-header .section-title { color: var(--cream); }
+    .drinks-header .section-body { color: var(--blush); opacity: 0.6; margin: 0 auto; text-align: center; }
+    .drinks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .drink-card {
+      border-radius: 20px; padding: 30px 22px; text-align: center;
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative; overflow: hidden;
+    }
+    /* gradient backgrounds per drink card */
+    .drink-card:nth-child(1) { background: linear-gradient(160deg, rgba(253,240,243,0.08) 0%, rgba(245,184,196,0.12) 100%); border: 1px solid rgba(245,184,196,0.15); }
+    .drink-card:nth-child(2) { background: linear-gradient(160deg, rgba(245,184,196,0.1) 0%, rgba(201,147,58,0.08) 100%); border: 1px solid rgba(201,147,58,0.15); }
+    .drink-card:nth-child(3) { background: linear-gradient(160deg, rgba(92,140,120,0.1) 0%, rgba(245,184,196,0.08) 100%); border: 1px solid rgba(92,140,120,0.2); }
+    .drink-card:nth-child(4) { background: linear-gradient(160deg, rgba(201,147,58,0.08) 0%, rgba(232,99,122,0.1) 100%); border: 1px solid rgba(201,147,58,0.15); }
+    .drink-card:nth-child(5) { background: linear-gradient(160deg, rgba(253,240,243,0.07) 0%, rgba(212,134,154,0.1) 100%); border: 1px solid rgba(212,134,154,0.15); }
+    .drink-card:nth-child(6) { background: linear-gradient(160deg, rgba(232,99,122,0.07) 0%, rgba(194,63,88,0.08) 100%); border: 1px solid rgba(232,99,122,0.15); }
+
+    .drink-card::before {
+      content: '';
+      position: absolute; bottom: -20px; right: -20px;
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 12px solid rgba(245,184,196,0.08); pointer-events: none;
+    }
+    .drink-card:hover { transform: translateY(-5px); box-shadow: 0 14px 36px rgba(0,0,0,0.25); }
+    .drink-name { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--cream); margin-bottom: 8px; }
+    .drink-desc { font-size: 0.82rem; line-height: 1.65; color: var(--blush); opacity: 0.65; }
+    .drink-tag {
+      display: inline-block; margin-top: 14px;
+      background: rgba(245,184,196,0.18); color: var(--blush);
+      font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .drink-tag.hh { background: rgba(232,99,122,0.3); color: #FFD9CE; }
+
+    /* ── ORDER ── */
+    .order-section {
+      text-align: center;
+      background:
+        radial-gradient(ellipse 60% 80% at 50% 100%, rgba(245,184,196,0.35) 0%, transparent 60%),
+        var(--cream);
+    }
+    .order-inner { max-width: 600px; margin: 0 auto; }
+    .order-big { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 8vw, 4.5rem); color: var(--brown); line-height: 1.1; margin-bottom: 20px; }
+    .order-big em { color: var(--rose); font-style: italic; }
+    .order-note { font-size: 0.85rem; line-height: 1.75; color: var(--espresso); opacity: 0.65; margin-bottom: 12px; }
+    .order-note strong { color: var(--brown); font-weight: 700; }
+
+    /* ── HOURS & LOCATION ── */
+    .info-section { background: var(--brown); color: var(--cream); position: relative; overflow: hidden; }
+    .info-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cellipse cx='40' cy='26' rx='5' ry='10' fill='none' stroke='%23F5B8C4' stroke-width='0.4' opacity='0.09'/%3E%3Cellipse cx='40' cy='26' rx='5' ry='10' fill='none' stroke='%23F5B8C4' stroke-width='0.4' opacity='0.09' transform='rotate(60 40 40)'/%3E%3Cellipse cx='40' cy='26' rx='5' ry='10' fill='none' stroke='%23F5B8C4' stroke-width='0.4' opacity='0.09' transform='rotate(120 40 40)'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .info-inner {
+      max-width: 1100px; margin: 0 auto; position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1px 1fr; gap: 60px; align-items: start;
+    }
+    .info-divider { background: rgba(253,240,243,0.15); align-self: stretch; }
+    .info-label { font-size: 0.6rem; letter-spacing: 5px; text-transform: uppercase; color: var(--blush); opacity: 0.6; margin-bottom: 18px; }
+    .info-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 26px; color: var(--cream); }
+    .hours-row {
+      display: flex; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid rgba(253,240,243,0.1);
+      font-size: 0.88rem; color: var(--blush);
+    }
+    .hours-row .day { opacity: 0.65; }
+    .address-block { font-size: 0.98rem; line-height: 2; color: var(--blush); opacity: 0.85; }
+    .address-block a { color: var(--blush); text-decoration: underline; text-underline-offset: 3px; opacity: 0.65; transition: opacity 0.2s; }
+    .address-block a:hover { opacity: 1; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--espresso); color: var(--blush); text-align: center; padding: 44px 24px; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.8rem; color: var(--blush); margin-bottom: 6px; }
+    .footer-sub { font-family: 'Noto Serif SC', serif; font-size: 0.7rem; letter-spacing: 3px; color: var(--blush); opacity: 0.35; margin-bottom: 6px; }
+    .footer-tagline { font-size: 0.62rem; letter-spacing: 4px; text-transform: uppercase; opacity: 0.38; margin-bottom: 24px; }
+    .footer-links { display: flex; gap: 24px; justify-content: center; list-style: none; margin-bottom: 24px; }
+    .footer-links a { font-size: 0.62rem; letter-spacing: 3px; text-transform: uppercase; color: var(--blush); opacity: 0.45; text-decoration: none; transition: opacity 0.2s; }
+    .footer-links a:hover { opacity: 1; }
+    .footer-copy { font-size: 0.72rem; opacity: 0.28; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .about { grid-template-columns: 1fr; gap: 40px; }
+      .about-visual { order: -1; max-width: 300px; margin: 0 auto; }
+      .flavors-grid { grid-template-columns: 1fr 1fr; }
+      .drinks-grid { grid-template-columns: 1fr 1fr; }
+      .info-inner { grid-template-columns: 1fr; }
+      .info-divider { display: none; }
+    }
+    @media (max-width: 480px) {
+      .flavors-grid { grid-template-columns: 1fr; }
+      .drinks-grid { grid-template-columns: 1fr; }
+      nav { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="main-nav">
+    <div class="nav-logo">
+      D's Donuts
+      <span>Corona, California</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#about">Our Story</a></li>
+      <li><a href="#heritage">Heritage</a></li>
+      <li><a href="#flavors">Flavors</a></li>
+      <li><a href="#drinks">Drinks</a></li>
+      <li><a href="#visit">Visit Us</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="mobile-close" id="mobile-close">✕</button>
+    <a href="#about" class="mobile-link">Our Story</a>
+    <a href="#heritage" class="mobile-link">Heritage</a>
+    <a href="#flavors" class="mobile-link">Flavors</a>
+    <a href="#drinks" class="mobile-link">Drinks</a>
+    <a href="#visit" class="mobile-link">Visit Us</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-ring"></div>
+    <div class="hero-inner">
+      <p class="hero-khmer">ដូណាត់ស្រស់ · ក្រុមគ្រួសារ · ព្រះអាទិត្យ</p>
+      <p class="hero-eyebrow">Fresh · Handmade · Family Owned</p>
+      <h1 class="hero-title">Made with<br/><em>love</em> &amp; sugar.</h1>
+      <p class="hero-sub">Corona's Cambodian-owned neighborhood donut shop</p>
+      <p class="hero-desc">
+        Family-owned and baked fresh every morning. From classic glazed to seasonal specials,
+        every donut carries the warmth of our family — by hand, with heart.
+      </p>
+      <div class="hero-buttons">
+        <a href="#flavors" class="btn-primary">See Today's Flavors</a>
+        <a href="#visit" class="btn-outline">Find Us</a>
+      </div>
+    </div>
+    <div class="scroll-hint"><span>Scroll</span></div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-band">
+    <div class="marquee-track">
+      <span>Fresh Baked Daily</span><span class="dot">◆</span>
+      <span>Cambodian Owned</span><span class="dot">◆</span>
+      <span>Family Since Day One</span><span class="dot">◆</span>
+      <span>Corona, CA</span><span class="dot">◆</span>
+      <span>20+ Years of Love</span><span class="dot">◆</span>
+      <span>Handmade Every Morning</span><span class="dot">◆</span>
+      <span>Fresh Baked Daily</span><span class="dot">◆</span>
+      <span>Cambodian Owned</span><span class="dot">◆</span>
+      <span>Family Since Day One</span><span class="dot">◆</span>
+      <span>Corona, CA</span><span class="dot">◆</span>
+      <span>20+ Years of Love</span><span class="dot">◆</span>
+      <span>Handmade Every Morning</span><span class="dot">◆</span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about">
+      <div class="about-visual reveal">
+        <div class="about-img-frame">
+          <svg viewBox="0 0 200 200" width="155" height="155" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:relative;z-index:1;">
+            <circle cx="100" cy="100" r="78" fill="#D97B6C"/>
+            <ellipse cx="100" cy="84" rx="78" ry="42" fill="#F2C4B0"/>
+            <path d="M60 90 Q55 110 58 118" stroke="#F2C4B0" stroke-width="8" stroke-linecap="round" fill="none"/>
+            <path d="M140 88 Q148 108 144 120" stroke="#F2C4B0" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <path d="M80 86 Q74 106 76 116" stroke="#F2C4B0" stroke-width="6" stroke-linecap="round" fill="none"/>
+            <rect x="85" y="70" width="14" height="5" rx="2.5" fill="#6B2D3E" transform="rotate(-20,92,72)"/>
+            <rect x="108" y="75" width="12" height="4" rx="2" fill="#3A1020" transform="rotate(15,114,77)"/>
+            <rect x="95" y="60" width="13" height="4" rx="2" fill="#C9933A" transform="rotate(5,101,62)"/>
+            <rect x="72" y="78" width="11" height="4" rx="2" fill="#6B2D3E" transform="rotate(35,77,80)"/>
+            <rect x="118" y="65" width="12" height="4" rx="2" fill="#E8637A" transform="rotate(-10,124,67)"/>
+            <rect x="103" y="88" width="10" height="4" rx="2" fill="#3A1020" transform="rotate(25,108,90)"/>
+            <circle cx="100" cy="100" r="28" fill="#FCE8ED"/>
+            <circle cx="100" cy="100" r="28" fill="none" stroke="#D97B6C" stroke-width="3" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="about-badge">Mom &amp; Pop<br/>since day one</div>
+      </div>
+      <div class="reveal">
+        <p class="section-label">Our Story</p>
+        <h2 class="section-title">A little shop<br/>with a <em>big heart.</em></h2>
+        <p class="section-body">
+          D's Donuts started with a simple dream: bring the kind of donut shop you remember from childhood back to Corona. No shortcuts, no mass production — just fresh dough, real ingredients, and a whole lot of love poured into every batch.
+        </p>
+        <br/>
+        <p class="section-body">
+          We're a family operation, and you'll likely see us behind the counter every single morning. Come for the donuts, stay for the community.
+        </p>
+        <br/>
+        <a href="#heritage" class="btn-outline" style="display:inline-block; margin-top: 8px;">Our Heritage</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAMBODIAN HERITAGE -->
+  <section class="heritage-section" id="heritage">
+    <div class="heritage-inner reveal">
+      <p class="heritage-label">Our Roots</p>
+      <span class="heritage-khmer">ប្រទេសកម្ពុជា → ក្រូណា, កាលីហ្វ័រនីញ៉ា</span>
+      <div class="heritage-divider"></div>
+      <h2 class="heritage-title">Cambodian Immigrants,<br/><em>Corona's Own.</em></h2>
+      <p class="heritage-body">
+        Our family came to the United States from Cambodia, carrying little more than hard work, resilience, and the dream of building something lasting. We found our home in Corona, California — and for over 20 years, we've been waking up before the sun to bake fresh donuts for this community we love.
+      </p>
+      <p class="heritage-body" style="font-size:0.92rem; opacity:0.65;">
+        Every donut is a small piece of that journey. From Phnom Penh to Green River Road — this shop is what the American dream tastes like to us. We are proud to be Cambodian-owned, family-run, and forever grateful to the neighbors who've supported us from day one.
+      </p>
+      <div class="heritage-pills">
+        <span class="heritage-pill">Cambodian Owned</span>
+        <span class="heritage-pill">Family Run</span>
+        <span class="heritage-pill">20+ Years in Corona</span>
+        <span class="heritage-pill">Immigrant Founded</span>
+        <span class="heritage-pill">Made with Pride</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLAVORS -->
+  <section class="flavors-section" id="flavors">
+    <div class="flavors-inner">
+      <div class="flavors-header reveal">
+        <p class="section-label">What We're Making</p>
+        <h2 class="section-title">Today's <em>Flavors</em></h2>
+        <p class="section-body" style="margin: 0 auto; text-align:center;">Rotating daily — because fresh is always better than predictable.</p>
+      </div>
+      <div class="flavors-grid">
+        <div class="flavor-card reveal">
+          <svg class="flavor-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="32" cy="32" r="26" fill="#C9A98A"/>
+            <ellipse cx="32" cy="26" rx="26" ry="14" fill="#FDF6EE"/>
+            <path d="M14 30 Q12 40 15 46" stroke="#FDF6EE" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <path d="M50 29 Q53 39 50 46" stroke="#FDF6EE" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <circle cx="32" cy="32" r="9" fill="#FAE8E0"/>
+          </svg>
+          <div class="flavor-name">Classic Glazed</div>
+          <div class="flavor-desc">The one that started it all. Light, pillowy, with just the right sweetness.</div>
+          <span class="flavor-tag">Always Available</span>
+        </div>
+        <div class="flavor-card reveal">
+          <svg class="flavor-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="32" cy="32" r="26" fill="#D97B6C"/>
+            <ellipse cx="32" cy="26" rx="26" ry="14" fill="#F2C4B0"/>
+            <path d="M14 30 Q12 40 15 46" stroke="#F2C4B0" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <path d="M50 29 Q53 39 50 46" stroke="#F2C4B0" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <rect x="22" y="18" width="8" height="3" rx="1.5" fill="#6B2D3E" transform="rotate(-20,26,19)"/>
+            <rect x="34" y="20" width="7" height="3" rx="1.5" fill="#3A1020" transform="rotate(15,37,21)"/>
+            <rect x="27" y="13" width="8" height="3" rx="1.5" fill="#FDF6EE" transform="rotate(5,31,14)"/>
+            <rect x="38" y="15" width="7" height="3" rx="1.5" fill="#C9933A" transform="rotate(-30,41,16)"/>
+            <circle cx="32" cy="32" r="9" fill="#FAE8E0"/>
+          </svg>
+          <div class="flavor-name">Strawberry Sprinkle</div>
+          <div class="flavor-desc">House-made strawberry glaze topped with rainbow sprinkles. A crowd favorite.</div>
+          <span class="flavor-tag">Daily Special</span>
+        </div>
+        <div class="flavor-card reveal">
+          <svg class="flavor-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="32" cy="32" r="26" fill="#6B3F2A"/>
+            <ellipse cx="32" cy="26" rx="26" ry="14" fill="#3A1F10"/>
+            <path d="M14 30 Q12 40 15 46" stroke="#3A1F10" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <path d="M50 29 Q53 39 50 46" stroke="#3A1F10" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <rect x="23" y="17" width="8" height="3" rx="1.5" fill="#C9A98A" transform="rotate(-15,27,18)"/>
+            <rect x="34" y="19" width="7" height="3" rx="1.5" fill="#F2C4B0" transform="rotate(20,37,20)"/>
+            <rect x="28" y="12" width="8" height="3" rx="1.5" fill="#C9A98A" transform="rotate(8,32,13)"/>
+            <circle cx="32" cy="32" r="9" fill="#FAE8E0"/>
+          </svg>
+          <div class="flavor-name">Chocolate Dream</div>
+          <div class="flavor-desc">Rich chocolate glaze with a fluffy interior. Pairs perfectly with coffee.</div>
+          <span class="flavor-tag">Always Available</span>
+        </div>
+        <div class="flavor-card reveal">
+          <svg class="flavor-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="32" cy="32" r="26" fill="#C9A98A"/>
+            <ellipse cx="32" cy="26" rx="26" ry="14" fill="#FDF6EE"/>
+            <path d="M14 30 Q12 40 15 46" stroke="#FDF6EE" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <path d="M50 29 Q53 39 50 46" stroke="#FDF6EE" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <circle cx="32" cy="22" r="6" fill="#F2C4B0" stroke="#C9A98A" stroke-width="1"/>
+            <line x1="32" y1="16" x2="32" y2="28" stroke="#C9A98A" stroke-width="0.8"/>
+            <line x1="26" y1="22" x2="38" y2="22" stroke="#C9A98A" stroke-width="0.8"/>
+            <circle cx="32" cy="32" r="9" fill="#FAE8E0"/>
+          </svg>
+          <div class="flavor-name">Lemon Zest</div>
+          <div class="flavor-desc">Bright citrus glaze with a hint of vanilla. Light and refreshing.</div>
+          <span class="flavor-tag">Seasonal</span>
+        </div>
+        <div class="flavor-card reveal">
+          <svg class="flavor-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="8" y="20" width="48" height="24" rx="6" fill="#C9A98A"/>
+            <rect x="8" y="20" width="48" height="13" rx="6" fill="#D97B6C"/>
+            <path d="M18 33 Q16 40 18 44" stroke="#D97B6C" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <path d="M46 33 Q48 40 46 44" stroke="#D97B6C" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <path d="M18 25 Q32 22 46 25" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round" fill="none"/>
+          </svg>
+          <div class="flavor-name">Maple Bar</div>
+          <div class="flavor-desc">Warm maple glaze over an old-fashioned bar. The Sunday morning staple.</div>
+          <span class="flavor-tag">Weekend Only</span>
+        </div>
+        <div class="flavor-card reveal">
+          <svg class="flavor-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="32" cy="32" r="26" fill="#F2C4B0"/>
+            <ellipse cx="32" cy="26" rx="26" ry="14" fill="#FAE8E0"/>
+            <path d="M14 30 Q12 40 15 46" stroke="#FAE8E0" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <path d="M50 29 Q53 39 50 46" stroke="#FAE8E0" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <text x="32" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="#D97B6C" font-style="italic">?</text>
+            <circle cx="32" cy="32" r="9" fill="#FDF6EE"/>
+          </svg>
+          <div class="flavor-name">Ask Us Today</div>
+          <div class="flavor-desc">We rotate seasonal creations — come in and see what we dreamed up this morning.</div>
+          <span class="flavor-tag">Rotating</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HAPPY HOUR BANNER -->
+  <div class="happy-hour-banner">
+    <div class="happy-hour-inner">
+      <span class="hh-badge">Happy Hour</span>
+      <span class="hh-text"><em>Daily</em> drink specials</span>
+      <span class="hh-time">Every Day · 2:00 pm – 6:00 pm</span>
+    </div>
+  </div>
+
+  <!-- SPECIALTY DRINKS -->
+  <section class="drinks-section" id="drinks">
+    <div class="drinks-inner">
+      <div class="drinks-header reveal">
+        <p class="section-label">Sip Something Special</p>
+        <h2 class="section-title">Specialty <em style="color:var(--blush)">Drinks</em></h2>
+        <p class="section-body">Crafted in-house to pair perfectly with your favorite donut. Happy hour deals daily from 2–6 pm.</p>
+      </div>
+      <div class="drinks-grid">
+        <div class="drink-card reveal">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <ellipse cx="30" cy="50" rx="22" ry="5" fill="#C9A98A"/>
+            <path d="M14 22 L17 48 Q17 52 30 52 Q43 52 43 48 L46 22 Z" fill="#FDF6EE" stroke="#C9A98A" stroke-width="1.2"/>
+            <ellipse cx="30" cy="22" rx="16" ry="5" fill="#6B3F2A"/>
+            <path d="M30 19 Q26 22 30 25 Q34 22 30 19" fill="none" stroke="#C9A98A" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="30" y1="19" x2="30" y2="25" stroke="#C9A98A" stroke-width="0.8"/>
+            <path d="M43 28 Q52 28 52 35 Q52 42 43 42" fill="none" stroke="#C9A98A" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="drink-name">Honey Lavender Latte</div>
+          <div class="drink-desc">Espresso with house lavender syrup, oat milk, and a drizzle of local honey.</div>
+          <span class="drink-tag">House Specialty</span>
+        </div>
+        <div class="drink-card reveal">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16 16 L19 52 Q19 55 30 55 Q41 55 41 52 L44 16 Z" fill="#FDF6EE" stroke="#C9A98A" stroke-width="1.2"/>
+            <path d="M18.5 38 L20.5 52 Q20.5 54.5 30 54.5 Q39.5 54.5 39.5 52 L41.5 38 Z" fill="#6B3F2A" opacity="0.8"/>
+            <path d="M17.5 26 L18.5 38 L41.5 38 L42.5 26 Z" fill="#C9A98A" opacity="0.6"/>
+            <rect x="21" y="28" width="7" height="6" rx="1.5" fill="rgba(255,255,255,0.7)" stroke="#C9A98A" stroke-width="0.6"/>
+            <rect x="31" y="30" width="6" height="5" rx="1.5" fill="rgba(255,255,255,0.7)" stroke="#C9A98A" stroke-width="0.6"/>
+            <rect x="34" y="6" width="3" height="36" rx="1.5" fill="#D97B6C"/>
+            <path d="M14 16 Q14 12 30 12 Q46 12 46 16 L44 16 Q44 14 30 14 Q16 14 16 16 Z" fill="#C9A98A"/>
+          </svg>
+          <div class="drink-name">Brown Sugar Horchata</div>
+          <div class="drink-desc">Creamy horchata blended with cold brew and a touch of cinnamon brown sugar.</div>
+          <span class="drink-tag hh">Happy Hour Deal</span>
+        </div>
+        <div class="drink-card reveal">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M17 12 L20 52 Q20 56 30 56 Q40 56 40 52 L43 12 Z" fill="none" stroke="#C9A98A" stroke-width="1.5"/>
+            <path d="M20.5 38 L21.5 52 Q21.5 55 30 55 Q38.5 55 38.5 52 L39.5 38 Z" fill="#8B9E5A" opacity="0.7"/>
+            <path d="M19 24 L20.5 38 L39.5 38 L41 24 Z" fill="#F2C4B0" opacity="0.8"/>
+            <path d="M17.5 12 L19 24 L41 24 L42.5 12 Z" fill="#FDF6EE" opacity="0.9"/>
+            <rect x="26" y="4" width="3" height="34" rx="1.5" fill="#D97B6C" opacity="0.85"/>
+          </svg>
+          <div class="drink-name">Strawberry Matcha</div>
+          <div class="drink-desc">Ceremonial grade matcha layered over house strawberry milk. Iced and refreshing.</div>
+          <span class="drink-tag">Fan Favorite</span>
+        </div>
+        <div class="drink-card reveal">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="16" y="14" width="28" height="40" rx="4" fill="none" stroke="#C9A98A" stroke-width="1.5"/>
+            <rect x="14" y="10" width="32" height="6" rx="3" fill="#C9A98A" opacity="0.4"/>
+            <rect x="17.5" y="28" width="25" height="25" rx="3" fill="#3A1F10" opacity="0.75"/>
+            <path d="M17.5 28 Q22 24 30 26 Q38 24 42.5 28 L42.5 32 Q38 29 30 31 Q22 29 17.5 32 Z" fill="#FDF6EE" opacity="0.9"/>
+            <circle cx="30" cy="20" r="6" fill="#F2C4B0" stroke="#D97B6C" stroke-width="1"/>
+            <line x1="30" y1="14" x2="30" y2="26" stroke="#D97B6C" stroke-width="0.7"/>
+            <line x1="24" y1="20" x2="36" y2="20" stroke="#D97B6C" stroke-width="0.7"/>
+            <rect x="36" y="4" width="2.5" height="30" rx="1.2" fill="#D97B6C" opacity="0.8"/>
+          </svg>
+          <div class="drink-name">Citrus Cold Brew</div>
+          <div class="drink-desc">Slow-steeped cold brew with a splash of orange and vanilla sweet cream on top.</div>
+          <span class="drink-tag hh">Happy Hour Deal</span>
+        </div>
+        <div class="drink-card reveal">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16 10 L20 54 Q20 57 30 57 Q40 57 40 54 L44 10 Z" fill="none" stroke="#C9A98A" stroke-width="1.5"/>
+            <path d="M17.5 18 L20.5 54 Q20.5 56.5 30 56.5 Q39.5 56.5 39.5 54 L42.5 18 Z" fill="#FDF6EE" opacity="0.85"/>
+            <ellipse cx="30" cy="18" rx="13" ry="3.5" fill="#C9A98A" opacity="0.5"/>
+            <rect x="36" y="6" width="3" height="24" rx="1.5" fill="#6B3F2A" transform="rotate(10,37,18)"/>
+          </svg>
+          <div class="drink-name">Classic Horchata</div>
+          <div class="drink-desc">Traditional, house-made horchata. Cool, sweet, and perfectly spiced.</div>
+          <span class="drink-tag">Always Available</span>
+        </div>
+        <div class="drink-card reveal">
+          <svg class="drink-icon" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16 16 L19 52 Q19 55 30 55 Q41 55 41 52 L44 16 Z" fill="#FAE8E0" stroke="#C9A98A" stroke-width="1.2"/>
+            <path d="M17.5 28 L19.5 52 Q19.5 54.5 30 54.5 Q40.5 54.5 40.5 52 L42.5 28 Z" fill="#F2C4B0" opacity="0.6"/>
+            <text x="30" y="38" text-anchor="middle" font-size="16" fill="#D97B6C" opacity="0.7">✦</text>
+            <rect x="33" y="6" width="3" height="28" rx="1.5" fill="#C9A98A"/>
+            <path d="M14 16 Q14 12 30 12 Q46 12 46 16 L44 16 Q44 14 30 14 Q16 14 16 16 Z" fill="#C9A98A"/>
+          </svg>
+          <div class="drink-name">Seasonal Special</div>
+          <div class="drink-desc">Ask us what we're crafting this week — we love experimenting with local flavors.</div>
+          <span class="drink-tag">Rotating</span>
+        </div>
+      </div>
+      <p style="text-align:center; margin-top:36px; font-size:0.78rem; color:var(--blush); opacity:0.45; letter-spacing:1px;">
+        Happy Hour pricing applies to all specialty drinks · Mon–Sun · 2:00 pm – 6:00 pm
+      </p>
+    </div>
+  </section>
+
+  <!-- ORDER -->
+  <section class="order-section" id="order">
+    <div class="order-inner reveal">
+      <p class="section-label" style="text-align:center;">Ready?</p>
+      <h2 class="order-big">Order for<br/><em>pickup</em> today.</h2>
+      <p class="order-note">
+        Call us or stop in — we're ready for you every morning.
+        For <strong>large orders or custom requests</strong>, please give us a heads up at least 48 hours in advance.
+      </p>
+      <p class="order-note" style="margin-bottom: 36px;">
+        Catering a party? We'd love to be part of it. Reach out and let's talk donuts.
+      </p>
+      <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+        <a href="tel:+19513716321" class="btn-primary">Call to Order</a>
+        <a href="mailto:hello@dsdonuts.com" class="btn-outline">Email Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOURS & LOCATION -->
+  <section class="info-section" id="visit">
+    <div class="info-inner">
+      <div class="reveal">
+        <p class="info-label">Hours</p>
+        <h2 class="info-title">We're open early</h2>
+        <div>
+          <div class="hours-row"><span class="day">Monday – Friday</span><span class="time">5:30 am – 2:00 pm</span></div>
+          <div class="hours-row"><span class="day">Saturday</span><span class="time">5:30 am – 3:00 pm</span></div>
+          <div class="hours-row"><span class="day">Sunday</span><span class="time">6:00 am – 1:00 pm</span></div>
+        </div>
+        <p style="margin-top:20px; font-size:0.8rem; color:var(--blush); opacity:0.45;">
+          We often sell out — come early for the best selection!
+        </p>
+      </div>
+
+      <div class="info-divider"></div>
+
+      <div class="reveal">
+        <p class="info-label">Find Us</p>
+        <h2 class="info-title">Come visit us</h2>
+        <div class="address-block">
+          <strong>D's Donuts</strong><br/>
+          4300 Green River Rd, Unit 116<br/>
+          Corona, CA 92882<br/><br/>
+          <a href="https://maps.google.com/?q=4300+Green+River+Rd+Unit+116+Corona+CA+92882" target="_blank">Get Directions →</a><br/><br/>
+          <a href="tel:+19513716321">(951) 371-6321</a><br/>
+          <a href="mailto:hello@dsdonuts.com">hello@dsdonuts.com</a><br/><br/>
+          Follow us on Instagram<br/>
+          <a href="https://instagram.com" target="_blank">@dsdonuts_corona</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">D's Donuts</div>
+    <div class="footer-sub">ដូណាត់ស្រស់ · Corona, CA</div>
+    <p class="footer-tagline">Cambodian Owned · Family Run · Est. with Love</p>
+    <ul class="footer-links">
+      <li><a href="#about">Story</a></li>
+      <li><a href="#heritage">Heritage</a></li>
+      <li><a href="#flavors">Flavors</a></li>
+      <li><a href="#drinks">Drinks</a></li>
+      <li><a href="#visit">Visit</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 D's Donuts. Made fresh daily in Corona, CA.</p>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 20); });
+
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileClose = document.getElementById('mobile-close');
+    hamburger.addEventListener('click', () => mobileMenu.classList.add('open'));
+    mobileClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
+    document.querySelectorAll('.mobile-link').forEach(l => { l.addEventListener('click', () => mobileMenu.classList.remove('open')); });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
