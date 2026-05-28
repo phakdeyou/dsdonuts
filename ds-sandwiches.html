@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sandwiches — D's Donuts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--cream:#FDF0F3;--blush:#F5B8C4;--rose:#E8637A;--deep:#C23F58;--dusty:#D4869A;--brown:#6B2D3E;--espresso:#3A1020;--pink-lt:#FCE8ED;--pink-md:#F7D0D9;--gold:#C9933A;--white:#FFFAFC;--warm:#FFF8F0}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--warm);color:var(--espresso);font-family:'Lato',sans-serif;font-weight:400;overflow-x:hidden}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 36px;background:rgba(255,248,240,0.93);backdrop-filter:blur(10px);border-bottom:1px solid rgba(201,147,58,0.2);transition:box-shadow 0.3s}
+    nav.scrolled{box-shadow:0 2px 20px rgba(107,45,62,0.1)}
+    .nav-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.5rem;color:var(--brown);text-decoration:none}
+    .nav-logo span{font-style:normal;font-size:0.55rem;font-family:'Lato',sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--dusty);display:block;margin-top:-3px}
+    .nav-links{display:flex;gap:22px;list-style:none}
+    .nav-links a{text-decoration:none;font-size:0.66rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--brown);opacity:0.7;transition:opacity 0.2s,color 0.2s}
+    .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--rose)}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--brown);border-radius:2px}
+    .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--warm);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+    .mobile-menu.open{display:flex}
+    .mobile-menu a{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--brown);text-decoration:none}
+    .mobile-menu a:hover{color:var(--rose)}
+    .mobile-close{position:absolute;top:22px;right:28px;background:none;border:none;font-size:2rem;color:var(--brown);cursor:pointer}
+
+    /* HERO */
+    .page-hero{padding:140px 24px 80px;text-align:center;
+      background:radial-gradient(ellipse 70% 50% at 80% 20%,rgba(245,184,196,0.3) 0%,transparent 60%),
+      radial-gradient(ellipse 60% 50% at 10% 80%,rgba(201,147,58,0.12) 0%,transparent 55%),var(--warm);
+      position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;width:250px;height:250px;border-radius:50%;border:34px solid rgba(201,147,58,0.08);top:5%;left:-6%;pointer-events:none}
+    .page-hero-eyebrow{font-size:0.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--dusty);margin-bottom:14px;opacity:0;animation:fadeUp 0.7s ease forwards 0.1s}
+    .page-hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,8vw,5rem);color:var(--brown);line-height:1.05;margin-bottom:14px;opacity:0;animation:fadeUp 0.7s ease forwards 0.25s}
+    .page-hero-title em{font-style:italic;color:var(--rose)}
+    .page-hero-sub{font-family:'Noto Serif SC',serif;font-size:1rem;color:var(--dusty);letter-spacing:1px;opacity:0;animation:fadeUp 0.7s ease forwards 0.4s}
+
+    /* MENU SECTIONS */
+    .menu-wrap{max-width:1100px;margin:0 auto;padding:70px 24px 90px}
+    .cat-header{display:flex;align-items:center;gap:20px;margin-bottom:36px}
+    .cat-line{flex:1;height:1px;background:linear-gradient(to right,var(--gold),transparent);opacity:0.3}
+    .cat-line-r{flex:1;height:1px;background:linear-gradient(to left,var(--gold),transparent);opacity:0.3}
+    .cat-title{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--brown);white-space:nowrap;font-weight:700}
+    .cat-title em{font-style:italic;color:var(--rose)}
+    .cat-desc{text-align:center;font-size:0.9rem;color:var(--espresso);line-height:1.75;margin-bottom:36px;max-width:580px;margin-left:auto;margin-right:auto;font-weight:400}
+    .menu-category{margin-bottom:70px}
+
+    .sandwich-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+
+    /* sandwich card */
+    .s-card{border-radius:24px;overflow:hidden;transition:transform 0.28s,box-shadow 0.28s;position:relative}
+    .s-card:hover{transform:translateY(-6px);box-shadow:0 18px 44px rgba(107,45,62,0.13)}
+    .s-card-photo{height:180px;display:flex;align-items:center;justify-content:center;position:relative}
+    .s-card-body{padding:24px 22px 26px;background:white}
+    .s-card-name{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--brown);font-weight:700;margin-bottom:6px}
+    .s-card-tagline{font-size:0.78rem;color:var(--dusty);font-style:italic;margin-bottom:14px;font-weight:400}
+    .s-items{list-style:none;margin-bottom:14px}
+    .s-items li{font-size:0.87rem;color:var(--espresso);font-weight:400;padding:5px 0;border-bottom:1px solid rgba(201,147,58,0.1);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+    .s-items li::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px}
+    .s-tag{display:inline-block;background:rgba(201,147,58,0.12);color:#7a5a10;font-size:0.56rem;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;font-weight:600}
+    .s-price{font-family:'Playfair Display',serif;font-size:1rem;color:var(--rose);font-style:italic;margin-top:10px}
+
+    /* BAGEL SECTION - 2 cards */
+    .bagel-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:760px;margin:0 auto}
+
+    /* SUB SECTION - 3 cards */
+    .sub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+
+    /* CUSTOMISE note */
+    .custom-note{background:linear-gradient(135deg,rgba(201,147,58,0.1),rgba(232,99,122,0.07));border:1px solid rgba(201,147,58,0.2);border-radius:18px;padding:28px 32px;text-align:center;margin-top:60px}
+    .custom-note p{font-size:0.9rem;line-height:1.8;color:var(--espresso);font-weight:400}
+    .custom-note strong{color:var(--brown);font-weight:700}
+
+    /* FOOTER */
+    footer{background:var(--espresso);color:var(--blush);text-align:center;padding:40px 24px}
+    .footer-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.6rem;color:var(--blush);margin-bottom:5px}
+    .footer-sub{font-family:'Noto Serif SC',serif;font-size:0.66rem;letter-spacing:3px;color:var(--blush);opacity:0.28;margin-bottom:5px}
+    .footer-tagline{font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;opacity:0.3;margin-bottom:20px}
+    .footer-links{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;list-style:none;margin-bottom:18px}
+    .footer-links a{font-size:0.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--blush);opacity:0.4;text-decoration:none;transition:opacity 0.2s}
+    .footer-links a:hover{opacity:1}
+    .footer-copy{font-size:0.66rem;opacity:0.22}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .reveal{opacity:0;transform:translateY(26px);transition:opacity 0.65s ease,transform 0.65s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    @media(max-width:768px){.nav-links{display:none}.hamburger{display:flex}.sandwich-grid,.sub-grid{grid-template-columns:1fr 1fr}.bagel-grid{grid-template-columns:1fr}}
+    @media(max-width:480px){.sandwich-grid,.sub-grid,.bagel-grid{grid-template-columns:1fr}nav{padding:15px 18px}}
+  </style>
+</head>
+<body>
+  <nav id="main-nav">
+    <a href="index.html" class="nav-logo">D's Donuts<span>Corona, California</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ds-menu-donuts.html">Donuts</a></li>
+      <li><a href="ds-menu-drinks.html">Drinks</a></li>
+      <li><a href="ds-sandwiches.html" class="active">Sandwiches</a></li>
+      <li><a href="ds-catering.html">Catering</a></li>
+      <li><a href="ds-about.html">About Us</a></li>
+      <li><a href="index.html#visit">Visit Us</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="mobile-close" id="mobile-close">✕</button>
+    <a href="index.html" class="mobile-link">Home</a>
+    <a href="ds-menu-donuts.html" class="mobile-link">Donuts</a>
+    <a href="ds-menu-drinks.html" class="mobile-link">Drinks</a>
+    <a href="ds-sandwiches.html" class="mobile-link">Sandwiches</a>
+    <a href="ds-catering.html" class="mobile-link">Catering</a>
+    <a href="ds-about.html" class="mobile-link">About Us</a>
+    <a href="index.html#visit" class="mobile-link">Visit Us</a>
+  </div>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <p class="page-hero-eyebrow">Fresh Made Every Morning</p>
+    <h1 class="page-hero-title">Breakfast <em>Sandwiches</em></h1>
+    <p class="page-hero-sub">Croissants · Bagels · Whole Grain Subs</p>
+  </div>
+
+  <div class="menu-wrap">
+
+    <!-- ── CROISSANT SANDWICHES ── -->
+    <div class="menu-category reveal">
+      <div class="cat-header">
+        <div class="cat-line"></div>
+        <h2 class="cat-title">Croissant <em>Sandwiches</em></h2>
+        <div class="cat-line-r"></div>
+      </div>
+      <p class="cat-desc">Buttery, flaky croissants filled fresh to order. Warm, golden, and made to start your morning right.</p>
+      <div class="sandwich-grid">
+
+        <div class="s-card">
+          <div class="s-card-photo" style="background:linear-gradient(160deg,#fff3d0 0%,#f5d080 50%,#c9933a 100%)">
+            <svg width="100" height="70" viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 58 Q18 24 50 22 Q82 24 88 58 Q68 44 50 45 Q32 44 12 58Z" fill="#C9933A" opacity="0.92"/>
+              <path d="M18 56 Q24 30 50 28 Q76 30 82 56" stroke="#8B6914" stroke-width="2" fill="none" opacity="0.4"/>
+              <path d="M26 50 Q36 34 50 32 Q64 34 74 50" stroke="rgba(255,255,255,0.35)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="s-card-body">
+            <div class="s-card-name">Ham, Egg &amp; Cheese</div>
+            <div class="s-card-tagline">The classic morning starter</div>
+            <ul class="s-items">
+              <li>Sliced ham</li>
+              <li>Freshly cracked egg</li>
+              <li>Melted cheese</li>
+              <li>On a flaky buttery croissant</li>
+            </ul>
+            <span class="s-tag">Most Popular</span>
+            <div class="s-price">$5.50</div>
+          </div>
+        </div>
+
+        <div class="s-card">
+          <div class="s-card-photo" style="background:linear-gradient(160deg,#fce8d8 0%,#e8a878 50%,#c97040 100%)">
+            <svg width="100" height="70" viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 58 Q18 24 50 22 Q82 24 88 58 Q68 44 50 45 Q32 44 12 58Z" fill="#C9933A" opacity="0.92"/>
+              <path d="M18 56 Q24 30 50 28 Q76 30 82 56" stroke="#8B6914" stroke-width="2" fill="none" opacity="0.4"/>
+              <!-- bacon strips -->
+              <path d="M22 52 Q35 48 48 52 Q61 56 74 52" stroke="#8B3010" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.7"/>
+              <path d="M24 56 Q37 52 50 56 Q63 60 76 56" stroke="#C94010" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+            </svg>
+          </div>
+          <div class="s-card-body">
+            <div class="s-card-name">Bacon, Egg &amp; Cheese</div>
+            <div class="s-card-tagline">Crispy bacon makes everything better</div>
+            <ul class="s-items">
+              <li>Crispy bacon strips</li>
+              <li>Freshly cracked egg</li>
+              <li>Melted cheese</li>
+              <li>On a flaky buttery croissant</li>
+            </ul>
+            <span class="s-tag">Breakfast Favorite</span>
+            <div class="s-price">$5.75</div>
+          </div>
+        </div>
+
+        <div class="s-card">
+          <div class="s-card-photo" style="background:linear-gradient(160deg,#fffde0 0%,#f5e870 50%,#c9a820 100%)">
+            <svg width="100" height="70" viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 58 Q18 24 50 22 Q82 24 88 58 Q68 44 50 45 Q32 44 12 58Z" fill="#C9933A" opacity="0.92"/>
+              <path d="M18 56 Q24 30 50 28 Q76 30 82 56" stroke="#8B6914" stroke-width="2" fill="none" opacity="0.4"/>
+              <!-- egg yolk -->
+              <circle cx="50" cy="48" r="8" fill="#F5D050" opacity="0.85"/>
+              <circle cx="50" cy="48" r="5" fill="#E8A820" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="s-card-body">
+            <div class="s-card-name">Egg &amp; Cheese</div>
+            <div class="s-card-tagline">Simple, warm, satisfying</div>
+            <ul class="s-items">
+              <li>Freshly cracked egg</li>
+              <li>Melted cheese</li>
+              <li>On a flaky buttery croissant</li>
+            </ul>
+            <span class="s-tag">Vegetarian Option</span>
+            <div class="s-price">$4.75</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── BAGELS ── -->
+    <div class="menu-category reveal">
+      <div class="cat-header">
+        <div class="cat-line"></div>
+        <h2 class="cat-title"><em>Bagels</em></h2>
+        <div class="cat-line-r"></div>
+      </div>
+      <p class="cat-desc">Chewy, fresh bagels — plain or loaded. Simple and satisfying any time of day.</p>
+      <div class="bagel-grid">
+
+        <div class="s-card">
+          <div class="s-card-photo" style="background:linear-gradient(160deg,#f5ebe0 0%,#deb887 50%,#a0784a 100%)">
+            <svg width="90" height="70" viewBox="0 0 90 70" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <ellipse cx="45" cy="38" rx="32" ry="23" fill="#C9933A" opacity="0.9"/>
+              <ellipse cx="45" cy="38" rx="32" ry="23" fill="none" stroke="#8B6914" stroke-width="1.5" opacity="0.5"/>
+              <ellipse cx="45" cy="38" rx="12" ry="8" fill="#f5ebe0"/>
+              <ellipse cx="32" cy="26" rx="2.5" ry="1.2" fill="#6B3F2A" transform="rotate(-20,32,26)" opacity="0.6"/>
+              <ellipse cx="44" cy="21" rx="2.5" ry="1.2" fill="#6B3F2A" transform="rotate(10,44,21)" opacity="0.6"/>
+              <ellipse cx="56" cy="26" rx="2.5" ry="1.2" fill="#6B3F2A" transform="rotate(30,56,26)" opacity="0.6"/>
+              <ellipse cx="60" cy="38" rx="2.5" ry="1.2" fill="#6B3F2A" transform="rotate(-15,60,38)" opacity="0.6"/>
+            </svg>
+          </div>
+          <div class="s-card-body">
+            <div class="s-card-name">Plain Bagel</div>
+            <div class="s-card-tagline">Classic, no frills</div>
+            <ul class="s-items">
+              <li>Freshly baked plain bagel</li>
+              <li>Served as-is or toasted</li>
+            </ul>
+            <span class="s-tag">Simple &amp; Classic</span>
+            <div class="s-price">$2.50</div>
+          </div>
+        </div>
+
+        <div class="s-card">
+          <div class="s-card-photo" style="background:linear-gradient(160deg,#fdf6ee 0%,#e8d5a0 50%,#c9a870 100%)">
+            <svg width="90" height="70" viewBox="0 0 90 70" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- bottom bagel half -->
+              <path d="M13 42 Q13 58 45 58 Q77 58 77 42 Q65 50 45 50 Q25 50 13 42Z" fill="#C9933A" opacity="0.9"/>
+              <!-- cream cheese layer -->
+              <path d="M14 40 Q14 46 45 46 Q76 46 76 40 Q64 45 45 45 Q26 45 14 40Z" fill="#FDF6EE" opacity="0.95"/>
+              <!-- top bagel half -->
+              <path d="M13 30 Q13 14 45 14 Q77 14 77 30 Q65 22 45 22 Q25 22 13 30Z" fill="#C9933A" opacity="0.9"/>
+              <ellipse cx="45" cy="22" rx="12" ry="7" fill="#f5ebe0"/>
+            </svg>
+          </div>
+          <div class="s-card-body">
+            <div class="s-card-name">Cream Cheese Bagel</div>
+            <div class="s-card-tagline">Smooth, creamy, perfect</div>
+            <ul class="s-items">
+              <li>Freshly baked bagel</li>
+              <li>Generous cream cheese spread</li>
+              <li>Plain or everything bagel</li>
+            </ul>
+            <span class="s-tag">Fan Favorite</span>
+            <div class="s-price">$3.50</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── WHOLE GRAIN SUBS ── -->
+    <div class="menu-category reveal">
+      <div class="cat-header">
+        <div class="cat-line"></div>
+        <h2 class="cat-title">Whole Grain <em>Subs</em></h2>
+        <div class="cat-line-r"></div>
+      </div>
+      <p class="cat-desc">Hearty whole grain and wheat bread loaded with your choice of filling. A satisfying midday option.</p>
+      <div class="sub-grid">
+
+        <div class="s-card">
+          <div class="s-card-photo" style="background:linear-gradient(160deg,#f0f5ec 0%,#b8d4a0 50%,#6a9450 100%)">
+            <svg width="100" height="60" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M8 28 Q10 14 50 13 Q90 14 92 28 Z" fill="#8B9A5A" opacity="0.92"/>
+              <rect x="8" y="28" width="84" height="16" rx="5" fill="#7a8c4a" opacity="0.88"/>
+              <rect x="10" y="28" width="80" height="5" rx="1" fill="#f5e6c8" opacity="0.75"/>
+              <rect x="10" y="33" width="80" height="4" rx="1" fill="#e8c870" opacity="0.6"/>
+              <!-- grain dots -->
+              <circle cx="28" cy="20" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="40" cy="17" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="52" cy="17" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="64" cy="17" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="72" cy="20" r="2" fill="rgba(255,255,255,0.3)"/>
+            </svg>
+          </div>
+          <div class="s-card-body">
+            <div class="s-card-name">Ham Sub</div>
+            <div class="s-card-tagline">Classic deli style</div>
+            <ul class="s-items">
+              <li>Sliced ham</li>
+              <li>Lettuce, tomato, onion</li>
+              <li>Your choice of condiments</li>
+              <li>Whole grain or wheat bread</li>
+            </ul>
+            <span class="s-tag">Classic</span>
+            <div class="s-price">$6.50</div>
+          </div>
+        </div>
+
+        <div class="s-card">
+          <div class="s-card-photo" style="background:linear-gradient(160deg,#e8f4f8 0%,#a0c8e0 50%,#5090b8 100%)">
+            <svg width="100" height="60" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M8 28 Q10 14 50 13 Q90 14 92 28 Z" fill="#8B9A5A" opacity="0.92"/>
+              <rect x="8" y="28" width="84" height="16" rx="5" fill="#7a8c4a" opacity="0.88"/>
+              <rect x="10" y="28" width="80" height="5" rx="1" fill="#e8f0f8" opacity="0.8"/>
+              <rect x="10" y="33" width="80" height="4" rx="1" fill="#c0d8e8" opacity="0.65"/>
+              <circle cx="28" cy="20" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="40" cy="17" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="52" cy="17" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="64" cy="17" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="72" cy="20" r="2" fill="rgba(255,255,255,0.3)"/>
+            </svg>
+          </div>
+          <div class="s-card-body">
+            <div class="s-card-name">Tuna Sub</div>
+            <div class="s-card-tagline">Fresh tuna salad mix</div>
+            <ul class="s-items">
+              <li>House tuna salad mix</li>
+              <li>Lettuce, tomato, onion</li>
+              <li>Your choice of condiments</li>
+              <li>Whole grain or wheat bread</li>
+            </ul>
+            <span class="s-tag">Fresh &amp; Light</span>
+            <div class="s-price">$6.50</div>
+          </div>
+        </div>
+
+        <div class="s-card">
+          <div class="s-card-photo" style="background:linear-gradient(160deg,#fce8d8 0%,#e8c098 50%,#c09060 100%)">
+            <svg width="100" height="60" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M8 28 Q10 14 50 13 Q90 14 92 28 Z" fill="#8B9A5A" opacity="0.92"/>
+              <rect x="8" y="28" width="84" height="16" rx="5" fill="#7a8c4a" opacity="0.88"/>
+              <rect x="10" y="28" width="80" height="5" rx="1" fill="#fce8d8" opacity="0.8"/>
+              <rect x="10" y="33" width="80" height="4" rx="1" fill="#e8c098" opacity="0.65"/>
+              <circle cx="28" cy="20" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="40" cy="17" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="52" cy="17" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="64" cy="17" r="2" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="72" cy="20" r="2" fill="rgba(255,255,255,0.3)"/>
+            </svg>
+          </div>
+          <div class="s-card-body">
+            <div class="s-card-name">Turkey Sub</div>
+            <div class="s-card-tagline">Deli turkey, done right</div>
+            <ul class="s-items">
+              <li>Sliced deli turkey</li>
+              <li>Lettuce, tomato, onion</li>
+              <li>Your choice of condiments</li>
+              <li>Whole grain or wheat bread</li>
+            </ul>
+            <span class="s-tag">Light &amp; Satisfying</span>
+            <div class="s-price">$6.75</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CUSTOMISE NOTE -->
+    <div class="custom-note reveal">
+      <p><strong>Make it your own.</strong> All sandwiches can be customized with your choice of condiments — mayo, mustard, or hot sauce. Just ask us when you order. Sandwiches are made fresh daily and available while supplies last. Call ahead for large orders: <strong>(951) 371-6321</strong></p>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-logo">D's Donuts</div>
+    <div class="footer-sub">ដូណាត់ស្រស់ · Corona, CA</div>
+    <p class="footer-tagline">Cambodian Owned · Family Run · Est. with Love</p>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ds-menu-donuts.html">Donuts</a></li>
+      <li><a href="ds-menu-drinks.html">Drinks</a></li>
+      <li><a href="ds-sandwiches.html">Sandwiches</a></li>
+      <li><a href="ds-catering.html">Catering</a></li>
+      <li><a href="ds-about.html">About Us</a></li>
+      <li><a href="index.html#visit">Visit</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 D's Donuts. Made fresh daily in Corona, CA.</p>
+  </footer>
+
+  <script>
+    const nav=document.getElementById('main-nav');
+    window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>20));
+    document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobile-menu').classList.add('open'));
+    document.getElementById('mobile-close').addEventListener('click',()=>document.getElementById('mobile-menu').classList.remove('open'));
+    document.querySelectorAll('.mobile-link').forEach(l=>l.addEventListener('click',()=>document.getElementById('mobile-menu').classList.remove('open')));
+    const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}}),{threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  </script>
+</body>
+</html>

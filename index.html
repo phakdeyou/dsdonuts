@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D's Donuts — Corona, CA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:#FDF0F3; --blush:#F5B8C4; --rose:#E8637A; --deep:#C23F58;
+      --dusty:#D4869A; --brown:#6B2D3E; --espresso:#3A1020;
+      --pink-lt:#FCE8ED; --pink-md:#F7D0D9; --gold:#C9933A; --white:#FFFAFC; --jade:#5C8C78;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--espresso);font-family:'Lato',sans-serif;font-weight:300;overflow-x:hidden}
+
+    /* ── NAV (shared) ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 36px;background:rgba(253,240,243,0.93);backdrop-filter:blur(10px);border-bottom:1px solid rgba(232,99,122,0.15);transition:box-shadow 0.3s}
+    nav.scrolled{box-shadow:0 2px 20px rgba(107,45,62,0.12)}
+    .nav-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.5rem;color:var(--brown);letter-spacing:-0.5px;text-decoration:none}
+    .nav-logo span{font-style:normal;font-size:0.55rem;font-family:'Lato',sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--dusty);display:block;margin-top:-3px}
+    .nav-links{display:flex;gap:28px;list-style:none}
+    .nav-links a{text-decoration:none;font-size:0.66rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--brown);opacity:0.7;transition:opacity 0.2s,color 0.2s}
+    .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--rose)}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--brown);border-radius:2px}
+    .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--cream);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:36px}
+    .mobile-menu.open{display:flex}
+    .mobile-menu a{font-family:'Playfair Display',serif;font-size:2rem;color:var(--brown);text-decoration:none;transition:color 0.2s}
+    .mobile-menu a:hover{color:var(--rose)}
+    .mobile-close{position:absolute;top:22px;right:28px;background:none;border:none;font-size:2rem;color:var(--brown);cursor:pointer}
+
+    /* ── BUTTONS ── */
+    .btn-primary{background:var(--rose);color:var(--white);padding:13px 30px;border-radius:60px;font-size:0.66rem;letter-spacing:3px;text-transform:uppercase;text-decoration:none;display:inline-block;transition:background 0.25s,transform 0.2s}
+    .btn-primary:hover{background:var(--deep);transform:translateY(-2px)}
+    .btn-outline{border:1.5px solid var(--rose);color:var(--rose);padding:13px 30px;border-radius:60px;font-size:0.66rem;letter-spacing:3px;text-transform:uppercase;text-decoration:none;display:inline-block;transition:all 0.25s}
+    .btn-outline:hover{background:var(--rose);color:var(--white);transform:translateY(-2px)}
+
+
+    /* ── SECTION SHARED ── */
+    section{padding:88px 24px}
+    .section-label{font-size:0.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--dusty);margin-bottom:12px}
+    .section-title{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,5vw,3rem);color:var(--brown);line-height:1.2;margin-bottom:16px}
+    .section-title em{font-style:italic;color:var(--rose)}
+    .section-body{font-size:0.97rem;line-height:1.85;color:var(--espresso);opacity:1;font-weight:400;max-width:540px}
+
+    /* ── MARQUEE ── */
+    .marquee-band{background:var(--brown);color:var(--blush);padding:13px 0;overflow:hidden;white-space:nowrap}
+    .marquee-track{display:inline-flex;gap:0;animation:marquee 22s linear infinite}
+    .marquee-track span{font-family:'Noto Serif SC',serif;font-size:0.9rem;padding:0 36px;opacity:0.88;letter-spacing:1px}
+    .marquee-track .dot{opacity:0.3;font-size:0.45rem;vertical-align:middle;padding:0 2px}
+
+    /* ── HERO ── */
+    .hero{min-height:100svh;display:grid;place-items:center;text-align:center;padding:120px 24px 70px;
+      background:radial-gradient(ellipse 80% 50% at 85% 15%,rgba(245,184,196,0.45) 0%,transparent 60%),
+        radial-gradient(ellipse 60% 60% at 10% 85%,rgba(252,232,237,0.7) 0%,transparent 55%),var(--cream);
+      position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;width:320px;height:320px;border-radius:50%;border:44px solid rgba(232,99,122,0.06);top:4%;left:-10%;pointer-events:none}
+    .hero::after{content:'';position:absolute;width:420px;height:420px;border-radius:50%;border:55px solid rgba(212,134,154,0.05);bottom:-8%;right:-10%;pointer-events:none}
+    .hero-inner{max-width:700px;position:relative;z-index:1}
+    .hero-khmer{font-family:'Noto Serif SC',serif;font-size:0.82rem;color:var(--rose);opacity:0;letter-spacing:4px;margin-bottom:10px;animation:fadeUp 0.8s ease forwards 0.15s}
+    .hero-eyebrow{font-size:0.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--dusty);margin-bottom:18px;opacity:0;animation:fadeUp 0.8s ease forwards 0.25s}
+    .hero-title{font-family:'Playfair Display',serif;font-size:clamp(3rem,10vw,5.8rem);line-height:1.05;color:var(--brown);margin-bottom:8px;opacity:0;animation:fadeUp 0.8s ease forwards 0.4s}
+    .hero-title em{font-style:italic;color:var(--rose)}
+    .hero-sub{font-family:'Noto Serif SC',serif;font-size:1.1rem;color:var(--dusty);margin-bottom:28px;letter-spacing:1px;opacity:0;animation:fadeUp 0.8s ease forwards 0.6s}
+    .hero-desc{font-size:0.93rem;line-height:1.8;color:var(--espresso);max-width:500px;margin:0 auto 28px;opacity:0;animation:fadeUp 0.8s ease forwards 0.8s}
+
+    /* ── WORLD CUP DECORATION on hero ── */
+    .hero-olympic{display:flex;justify-content:center;margin-bottom:28px;opacity:0;animation:fadeUp 0.8s ease forwards 0.95s}
+    .hero-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s ease forwards 1.05s}
+    .scroll-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0;animation:fadeUp 1s ease forwards 1.4s}
+    .scroll-hint span{font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--dusty)}
+    .scroll-hint::after{content:'';display:block;width:1px;height:32px;background:linear-gradient(to bottom,var(--dusty),transparent);animation:pulse 1.8s ease-in-out infinite}
+
+    /* ── ABOUT ── */
+    #about{background:radial-gradient(ellipse 70% 50% at 0% 50%,rgba(245,184,196,0.18) 0%,transparent 60%),var(--cream)}
+    .about{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+    .about-visual{position:relative}
+    .about-img-frame{width:100%;aspect-ratio:4/5;border-radius:120px 20px 120px 20px;
+      background:linear-gradient(160deg,var(--blush) 0%,var(--pink-md) 50%,var(--pink-lt) 100%);
+      display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .about-img-frame::before{content:'';position:absolute;inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cellipse cx='30' cy='18' rx='4' ry='8' fill='none' stroke='%23C23F58' stroke-width='0.5' opacity='0.12'/%3E%3Cellipse cx='30' cy='18' rx='4' ry='8' fill='none' stroke='%23C23F58' stroke-width='0.5' opacity='0.12' transform='rotate(60 30 30)'/%3E%3Cellipse cx='30' cy='18' rx='4' ry='8' fill='none' stroke='%23C23F58' stroke-width='0.5' opacity='0.12' transform='rotate(120 30 30)'/%3E%3C/svg%3E")}
+    .about-badge{position:absolute;bottom:-16px;right:-16px;background:var(--rose);color:var(--white);width:108px;height:108px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;text-align:center;font-size:0.66rem;line-height:1.5;box-shadow:0 8px 28px rgba(232,99,122,0.4);z-index:2}
+
+    /* ── HERITAGE ── */
+    .heritage-section{background:linear-gradient(135deg,var(--brown) 0%,#4A1828 100%);padding:70px 24px;position:relative;overflow:hidden}
+    .heritage-section::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect x='48' y='10' width='4' height='30' rx='2' fill='%23E8637A' opacity='0.07'/%3E%3Crect x='48' y='10' width='4' height='30' rx='2' fill='%23E8637A' opacity='0.07' transform='rotate(45 50 50)'/%3E%3Crect x='48' y='10' width='4' height='30' rx='2' fill='%23E8637A' opacity='0.07' transform='rotate(90 50 50)'/%3E%3Crect x='48' y='10' width='4' height='30' rx='2' fill='%23E8637A' opacity='0.07' transform='rotate(135 50 50)'/%3E%3C/svg%3E")}
+    .heritage-inner{max-width:900px;margin:0 auto;text-align:center;position:relative;z-index:1}
+    .heritage-label{font-size:0.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--blush);opacity:0.55;margin-bottom:14px}
+    .heritage-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,5vw,2.8rem);color:var(--cream);line-height:1.2;margin-bottom:22px}
+    .heritage-title em{font-style:italic;color:var(--blush)}
+    .heritage-khmer{font-family:'Noto Serif SC',serif;font-size:1rem;color:var(--blush);opacity:0.5;letter-spacing:3px;margin-bottom:26px;display:block}
+    .heritage-body{font-size:0.97rem;line-height:1.9;color:var(--blush);opacity:0.78;max-width:700px;margin:0 auto 20px}
+    .heritage-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+    .heritage-pill{background:rgba(245,184,196,0.13);border:1px solid rgba(245,184,196,0.28);border-radius:40px;padding:7px 18px;font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--blush);opacity:0.82}
+    .heritage-divider{width:60px;height:2px;background:linear-gradient(to right,transparent,var(--rose),transparent);margin:0 auto 26px}
+
+    /* ── FLAVORS (home preview) ── */
+    .flavors-section{background:var(--pink-lt);position:relative}
+    .flavors-section::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ccircle cx='40' cy='40' r='2' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.12'/%3E%3Cellipse cx='40' cy='28' rx='5' ry='9' fill='none' stroke='%23E8637A' stroke-width='0.35' opacity='0.07'/%3E%3Cellipse cx='40' cy='28' rx='5' ry='9' fill='none' stroke='%23E8637A' stroke-width='0.35' opacity='0.07' transform='rotate(60 40 40)'/%3E%3Cellipse cx='40' cy='28' rx='5' ry='9' fill='none' stroke='%23E8637A' stroke-width='0.35' opacity='0.07' transform='rotate(120 40 40)'/%3E%3C/svg%3E")}
+    .flavors-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+    .flavors-header{text-align:center;margin-bottom:52px}
+    .flavors-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .flavor-card{border-radius:22px;padding:34px 22px;text-align:center;transition:transform 0.28s,box-shadow 0.28s;cursor:default;position:relative;overflow:hidden}
+    .flavor-card:nth-child(1){background:linear-gradient(160deg,#fff5f7 0%,#fce8ed 100%)}
+    .flavor-card:nth-child(2){background:linear-gradient(160deg,#fce8ed 0%,#f9d5de 100%)}
+    .flavor-card:nth-child(3){background:linear-gradient(160deg,#f5ebe0 0%,#ecddd0 100%)}
+    .flavor-card:nth-child(4){background:linear-gradient(160deg,#fffaec 0%,#fdf0da 100%)}
+    .flavor-card:nth-child(5){background:linear-gradient(160deg,#f0f7f4 0%,#dff0e8 100%)}
+    .flavor-card:nth-child(6){background:linear-gradient(160deg,#f7f0fb 0%,#ece0f5 100%)}
+    .flavor-card::before{content:'';position:absolute;bottom:-18px;right:-18px;width:90px;height:90px;border-radius:50%;border:14px solid rgba(232,99,122,0.07);pointer-events:none}
+    .flavor-card:hover{transform:translateY(-6px);box-shadow:0 18px 44px rgba(107,45,62,0.13)}
+    .flavor-icon{width:62px;height:62px;margin:0 auto 14px;display:block}
+    .drink-icon{width:58px;height:58px;margin:0 auto 12px;display:block}
+    .flavor-name{font-family:'Playfair Display',serif;font-size:1.08rem;color:var(--brown);margin-bottom:7px;font-weight:700}
+    .flavor-desc{font-size:0.85rem;line-height:1.6;color:var(--espresso);opacity:1;font-weight:400}
+    .flavor-tag{display:inline-block;margin-top:12px;background:rgba(232,99,122,0.11);color:var(--deep);font-size:0.56rem;letter-spacing:2px;text-transform:uppercase;padding:4px 11px;border-radius:20px}
+    .flavors-cta{text-align:center;margin-top:48px}
+
+    /* ── HAPPY HOUR BANNER ── */
+    .happy-hour-banner{background:linear-gradient(135deg,var(--rose) 0%,var(--deep) 100%);color:var(--white);text-align:center;padding:20px 24px;position:relative;overflow:hidden}
+    .happy-hour-banner::before{content:'· · · · · · · · · · · · · · · · · · · ·';position:absolute;font-size:1.4rem;opacity:0.1;top:50%;left:-10px;transform:translateY(-50%);white-space:nowrap;letter-spacing:20px;pointer-events:none}
+    .happy-hour-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap}
+    .hh-badge{background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.35);border-radius:40px;padding:5px 16px;font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;font-weight:700}
+    .hh-text{font-family:'Playfair Display',serif;font-size:clamp(0.95rem,3vw,1.25rem)}
+    .hh-text em{font-style:italic}
+    .hh-time{font-size:0.72rem;letter-spacing:2px;opacity:0.82;text-transform:uppercase}
+
+    /* ── DRINKS (home preview) ── */
+    .drinks-section{background:var(--espresso);position:relative;overflow:hidden}
+    .drinks-section::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='3' fill='none' stroke='%23E8637A' stroke-width='0.5' opacity='0.09'/%3E%3Cellipse cx='50' cy='32' rx='6' ry='12' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.06'/%3E%3Cellipse cx='50' cy='32' rx='6' ry='12' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.06' transform='rotate(60 50 50)'/%3E%3Cellipse cx='50' cy='32' rx='6' ry='12' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.06' transform='rotate(120 50 50)'/%3E%3C/svg%3E")}
+    .drinks-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+    .drinks-header{text-align:center;margin-bottom:52px}
+    .drinks-header .section-label{color:var(--blush);opacity:0.5}
+    .drinks-header .section-title{color:var(--cream)}
+    .drinks-header .section-body{color:var(--blush);opacity:0.58;margin:0 auto;text-align:center}
+    .drinks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .drink-card{border-radius:18px;padding:28px 20px;text-align:center;transition:transform 0.25s,box-shadow 0.25s;position:relative;overflow:hidden}
+    .drink-card:nth-child(1){background:linear-gradient(160deg,rgba(253,240,243,0.07) 0%,rgba(245,184,196,0.12) 100%);border:1px solid rgba(245,184,196,0.14)}
+    .drink-card:nth-child(2){background:linear-gradient(160deg,rgba(245,184,196,0.09) 0%,rgba(201,147,58,0.08) 100%);border:1px solid rgba(201,147,58,0.14)}
+    .drink-card:nth-child(3){background:linear-gradient(160deg,rgba(92,140,120,0.1) 0%,rgba(245,184,196,0.07) 100%);border:1px solid rgba(92,140,120,0.18)}
+    .drink-card:nth-child(4){background:linear-gradient(160deg,rgba(201,147,58,0.07) 0%,rgba(232,99,122,0.09) 100%);border:1px solid rgba(201,147,58,0.14)}
+    .drink-card:nth-child(5){background:linear-gradient(160deg,rgba(253,240,243,0.06) 0%,rgba(212,134,154,0.1) 100%);border:1px solid rgba(212,134,154,0.14)}
+    .drink-card:nth-child(6){background:linear-gradient(160deg,rgba(232,99,122,0.06) 0%,rgba(194,63,88,0.08) 100%);border:1px solid rgba(232,99,122,0.13)}
+    .drink-card:hover{transform:translateY(-5px);box-shadow:0 14px 36px rgba(0,0,0,0.22)}
+    .drink-name{font-family:'Playfair Display',serif;font-size:1rem;color:var(--cream);margin-bottom:7px;font-weight:700}
+    .drink-desc{font-size:0.85rem;line-height:1.65;color:var(--blush);opacity:1;font-weight:400}
+    .drink-tag{display:inline-block;margin-top:12px;background:rgba(245,184,196,0.16);color:var(--blush);font-size:0.56rem;letter-spacing:2px;text-transform:uppercase;padding:4px 11px;border-radius:20px}
+    .drink-tag.hh{background:rgba(232,99,122,0.28);color:#FFD9CE}
+    .drinks-cta{text-align:center;margin-top:48px}
+
+    /* ── ORDER ── */
+    .order-section{text-align:center;background:radial-gradient(ellipse 60% 80% at 50% 100%,rgba(245,184,196,0.32) 0%,transparent 60%),var(--cream)}
+    .order-inner{max-width:600px;margin:0 auto}
+    .order-big{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,8vw,4.3rem);color:var(--brown);line-height:1.1;margin-bottom:18px}
+    .order-big em{color:var(--rose);font-style:italic}
+    .order-note{font-size:0.84rem;line-height:1.75;color:var(--espresso);opacity:0.63;margin-bottom:12px}
+    .order-note strong{color:var(--brown);font-weight:700}
+
+    /* ── INFO / VISIT ── */
+    .info-section{background:var(--brown);color:var(--cream);position:relative;overflow:hidden}
+    .info-section::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cellipse cx='40' cy='26' rx='5' ry='10' fill='none' stroke='%23F5B8C4' stroke-width='0.4' opacity='0.08'/%3E%3Cellipse cx='40' cy='26' rx='5' ry='10' fill='none' stroke='%23F5B8C4' stroke-width='0.4' opacity='0.08' transform='rotate(60 40 40)'/%3E%3Cellipse cx='40' cy='26' rx='5' ry='10' fill='none' stroke='%23F5B8C4' stroke-width='0.4' opacity='0.08' transform='rotate(120 40 40)'/%3E%3C/svg%3E")}
+    .info-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr 1px 1fr;gap:60px;align-items:start}
+    .info-divider{background:rgba(253,240,243,0.13);align-self:stretch}
+    .info-label{font-size:0.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--blush);opacity:0.55;margin-bottom:16px}
+    .info-title{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:24px;color:var(--cream)}
+    .hours-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(253,240,243,0.1);font-size:0.87rem;color:var(--blush)}
+    .hours-row .day{opacity:0.62}
+    .address-block{font-size:0.96rem;line-height:2;color:var(--blush);opacity:0.83}
+    .address-block a{color:var(--blush);text-decoration:underline;text-underline-offset:3px;opacity:0.62;transition:opacity 0.2s}
+    .address-block a:hover{opacity:1}
+
+    /* ── FOOTER ── */
+    footer{background:var(--espresso);color:var(--blush);text-align:center;padding:42px 24px}
+    .footer-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.7rem;color:var(--blush);margin-bottom:5px}
+    .footer-sub{font-family:'Noto Serif SC',serif;font-size:0.68rem;letter-spacing:3px;color:var(--blush);opacity:0.32;margin-bottom:5px}
+    .footer-tagline{font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;opacity:0.35;margin-bottom:22px}
+    .footer-links{display:flex;gap:22px;justify-content:center;list-style:none;margin-bottom:22px}
+    .footer-links a{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--blush);opacity:0.42;text-decoration:none;transition:opacity 0.2s}
+    .footer-links a:hover{opacity:1}
+    .footer-copy{font-size:0.7rem;opacity:0.25}
+
+
+    .flavor-card .card-photo {
+      width: 100%; height: 160px; object-fit: cover;
+      border-radius: 14px; margin-bottom: 14px;
+      display: block;
+    }
+    .drink-card .card-photo {
+      width: 100%; height: 150px; object-fit: cover;
+      border-radius: 12px; margin-bottom: 12px;
+      display: block;
+    }
+
+
+    /* ── TEAM SLIDESHOW ── */
+    .team-section{background:var(--pink-lt);padding:80px 24px;position:relative;overflow:hidden}
+    .team-section::before{content:'';position:absolute;inset:0;pointer-events:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ccircle cx='40' cy='40' r='2' fill='none' stroke='%23E8637A' stroke-width='0.4' opacity='0.1'/%3E%3C/svg%3E")}
+    .team-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+    .team-header{text-align:center;margin-bottom:52px}
+
+    .slideshow-wrap{position:relative;overflow:hidden;border-radius:24px}
+    .slideshow-track{display:flex;transition:transform 0.55s cubic-bezier(0.4,0,0.2,1)}
+    .slide{min-width:100%;position:relative}
+
+    /* each slide is a card with photo + info side by side */
+    .slide-inner{display:grid;grid-template-columns:1fr 1fr;min-height:420px;border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(107,45,62,0.14)}
+    .slide-photo{position:relative;overflow:hidden}
+    .slide-photo-placeholder{width:100%;height:100%;min-height:380px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;font-size:0.8rem;letter-spacing:2px;text-transform:uppercase}
+    .slide-photo-placeholder .photo-icon{width:70px;height:70px;border-radius:50%;border:2px dashed rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center}
+    .slide-photo-placeholder .photo-label{opacity:0.55;font-size:0.62rem;letter-spacing:3px;text-align:center;line-height:1.8;padding:0 20px}
+    .slide-info{background:white;padding:48px 42px;display:flex;flex-direction:column;justify-content:center}
+    .slide-role{font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--dusty);margin-bottom:10px}
+    .slide-name{font-family:'Playfair Display',serif;font-size:2rem;color:var(--brown);line-height:1.15;margin-bottom:16px}
+    .slide-name em{font-style:italic;color:var(--rose)}
+    .slide-bio{font-size:0.88rem;line-height:1.85;color:var(--espresso);opacity:0.68;margin-bottom:24px}
+    .slide-tag{display:inline-block;background:rgba(232,99,122,0.1);color:var(--deep);font-size:0.56rem;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:20px}
+
+    /* nav dots + arrows */
+    .slideshow-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:28px}
+    .slide-dot{width:8px;height:8px;border-radius:50%;background:var(--blush);border:none;cursor:pointer;transition:all 0.25s;padding:0}
+    .slide-dot.active{background:var(--rose);width:24px;border-radius:4px}
+    .slide-arrow{background:white;border:1.5px solid rgba(232,99,122,0.25);color:var(--rose);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:all 0.2s;flex-shrink:0}
+    .slide-arrow:hover{background:var(--rose);color:white;border-color:var(--rose)}
+
+    /* photo upload hint overlay */
+    .photo-hint{position:absolute;bottom:12px;left:12px;right:12px;background:rgba(58,16,32,0.65);border-radius:10px;padding:8px 12px;font-size:0.62rem;color:rgba(255,255,255,0.7);letter-spacing:1px;text-align:center;backdrop-filter:blur(4px)}
+
+    @media(max-width:768px){
+      .slide-inner{grid-template-columns:1fr;min-height:auto}
+      .slide-photo-placeholder{min-height:220px}
+      .slide-info{padding:30px 24px}
+      .slide-name{font-size:1.5rem}
+    }
+
+
+
+    /* ── SANDWICHES ── */
+    .sandwiches-section{background:var(--cream);position:relative}
+    .sandwiches-inner{max-width:1100px;margin:0 auto}
+    .sandwiches-header{text-align:center;margin-bottom:48px}
+    .sandwich-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+    .sandwich-card{border-radius:22px;padding:30px 24px;position:relative;overflow:hidden;transition:transform 0.28s,box-shadow 0.28s}
+    .sandwich-card:nth-child(1){background:linear-gradient(155deg,#fff8f0 0%,#fdebd0 100%)}
+    .sandwich-card:nth-child(2){background:linear-gradient(155deg,#f5f0e8 0%,#ecddd0 100%)}
+    .sandwich-card:nth-child(3){background:linear-gradient(155deg,#f0f5ec 0%,#daebd0 100%)}
+    .sandwich-card::before{content:'';position:absolute;bottom:-16px;right:-16px;width:80px;height:80px;border-radius:50%;border:12px solid rgba(201,147,58,0.1);pointer-events:none}
+    .sandwich-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(107,45,62,0.11)}
+    .sandwich-card-photo{height:150px;border-radius:14px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative;overflow:hidden}
+    .sandwich-card-title{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--brown);font-weight:700;margin-bottom:10px}
+    .sandwich-items{list-style:none;margin-bottom:14px}
+    .sandwich-items li{font-size:0.85rem;color:var(--espresso);font-weight:400;padding:4px 0;border-bottom:1px solid rgba(107,45,62,0.07);display:flex;align-items:center;gap:8px}
+    .sandwich-items li::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--rose);flex-shrink:0}
+    .sandwich-tag{display:inline-block;background:rgba(201,147,58,0.15);color:#7a5a10;font-size:0.56rem;letter-spacing:2px;text-transform:uppercase;padding:4px 11px;border-radius:20px;font-weight:600}
+    @media(max-width:768px){.sandwich-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.sandwich-grid{grid-template-columns:1fr}}
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:768px){
+      .nav-links{display:none} .hamburger{display:flex}
+      .about{grid-template-columns:1fr;gap:36px} .about-visual{order:-1;max-width:290px;margin:0 auto}
+      .flavors-grid{grid-template-columns:1fr 1fr} .drinks-grid{grid-template-columns:1fr 1fr}
+      .info-inner{grid-template-columns:1fr} .info-divider{display:none}
+    }
+    @media(max-width:480px){
+      .flavors-grid{grid-template-columns:1fr} .drinks-grid{grid-template-columns:1fr} nav{padding:15px 18px}
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="main-nav">
+    <a href="index.html" class="nav-logo">D's Donuts<span>Corona, California</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="ds-menu-donuts.html">Donuts</a></li>
+      <li><a href="ds-menu-drinks.html">Drinks</a></li>
+      <li><a href="ds-sandwiches.html">Sandwiches</a></li>
+      <li><a href="ds-catering.html">Catering</a></li>
+      <li><a href="ds-about.html">About Us</a></li>
+      <li><a href="index.html#visit">Visit Us</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="mobile-close" id="mobile-close">✕</button>
+    <a href="index.html" class="mobile-link">Home</a>
+    <a href="ds-menu-donuts.html" class="mobile-link">Donuts</a>
+    <a href="ds-menu-drinks.html" class="mobile-link">Drinks</a>
+    <a href="ds-catering.html" class="mobile-link">Catering</a>
+    <a href="index.html#visit" class="mobile-link">Visit Us</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-inner">
+      <p class="hero-khmer">ដូណាត់ស្រស់ · ក្រុមគ្រួសារ · ព្រះអាទិត្យ</p>
+      <p class="hero-eyebrow">Fresh · Handmade · Family Owned</p>
+      <h1 class="hero-title">Made with<br/><em>love</em> &amp; sugar.</h1>
+      <p class="hero-sub">Corona's Cambodian-owned neighborhood donut shop</p>
+      <p class="hero-desc">Family-owned and baked fresh every morning. From classic glazed to seasonal specials, every donut carries the warmth of our family — by hand, with heart.</p>
+
+      <!-- WORLD CUP 2026 DECORATION -->
+      <div class="hero-olympic">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+          <!-- Soccer ball SVG - pure geometric, no trademarks -->
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Soccer ball" role="img" style="filter:drop-shadow(0 4px 12px rgba(107,45,62,0.18))">
+            <!-- outer circle -->
+            <circle cx="32" cy="32" r="30" fill="white" stroke="#6B2D3E" stroke-width="1.5" opacity="0.9"/>
+            <!-- center pentagon -->
+            <polygon points="32,16 43,24 39,37 25,37 21,24" fill="#3A1020" opacity="0.85"/>
+            <!-- surrounding pentagons (5) -->
+            <polygon points="32,6 38,10 36,17 28,17 26,10" fill="#3A1020" opacity="0.85"/>
+            <polygon points="50,18 54,25 48,30 42,26 43,19" fill="#3A1020" opacity="0.85"/>
+            <polygon points="47,42 44,50 37,50 35,43 41,38" fill="#3A1020" opacity="0.85"/>
+            <polygon points="17,42 23,38 29,43 27,50 20,50" fill="#3A1020" opacity="0.85"/>
+            <polygon points="14,18 21,19 22,26 16,30 10,25" fill="#3A1020" opacity="0.85"/>
+            <!-- outer ring -->
+            <circle cx="32" cy="32" r="30" fill="none" stroke="#D4869A" stroke-width="1" opacity="0.4"/>
+          </svg>
+          <!-- FIFA World Cup 2026 text badge -->
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:28px;height:1px;background:linear-gradient(to right,transparent,var(--dusty))"></div>
+            <span style="font-family:'Lato',sans-serif;font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--dusty);opacity:0.8">World Cup 2026 · Corona Pride</span>
+            <div style="width:28px;height:1px;background:linear-gradient(to left,transparent,var(--dusty))"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-buttons">
+        <a href="ds-menu-donuts.html" class="btn-primary">See Our Donuts</a>
+        <a href="index.html#visit" class="btn-outline">Find Us</a>
+      </div>
+    </div>
+    <div class="scroll-hint"><span>Scroll</span></div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-band">
+    <div class="marquee-track">
+      <span>Fresh Baked Daily</span><span class="dot">◆</span><span>Cambodian Owned</span><span class="dot">◆</span><span>Family Since Day One</span><span class="dot">◆</span><span>Corona, CA</span><span class="dot">◆</span><span>20+ Years of Love</span><span class="dot">◆</span><span>Handmade Every Morning</span><span class="dot">◆</span>
+      <span>Fresh Baked Daily</span><span class="dot">◆</span><span>Cambodian Owned</span><span class="dot">◆</span><span>Family Since Day One</span><span class="dot">◆</span><span>Corona, CA</span><span class="dot">◆</span><span>20+ Years of Love</span><span class="dot">◆</span><span>Handmade Every Morning</span><span class="dot">◆</span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about">
+      <div class="about-visual reveal">
+        <div class="about-img-frame">
+          <svg viewBox="0 0 200 200" width="150" height="150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:relative;z-index:1">
+            <circle cx="100" cy="100" r="78" fill="#D97B6C"/>
+            <ellipse cx="100" cy="84" rx="78" ry="42" fill="#F2C4B0"/>
+            <path d="M60 90 Q55 110 58 118" stroke="#F2C4B0" stroke-width="8" stroke-linecap="round" fill="none"/>
+            <path d="M140 88 Q148 108 144 120" stroke="#F2C4B0" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <rect x="85" y="70" width="14" height="5" rx="2.5" fill="#6B2D3E" transform="rotate(-20,92,72)"/>
+            <rect x="108" y="75" width="12" height="4" rx="2" fill="#C9933A" transform="rotate(15,114,77)"/>
+            <rect x="95" y="60" width="13" height="4" rx="2" fill="#C9933A" transform="rotate(5,101,62)"/>
+            <rect x="72" y="78" width="11" height="4" rx="2" fill="#6B2D3E" transform="rotate(35,77,80)"/>
+            <rect x="118" y="65" width="12" height="4" rx="2" fill="#E8637A" transform="rotate(-10,124,67)"/>
+            <circle cx="100" cy="100" r="28" fill="#FCE8ED"/>
+          </svg>
+        </div>
+        <div class="about-badge">Mom &amp; Pop<br/>since day one</div>
+      </div>
+      <div class="reveal">
+        <p class="section-label">Our Story</p>
+        <h2 class="section-title">A little shop<br/>with a <em>big heart.</em></h2>
+        <p class="section-body">D's Donuts started with a simple dream: bring the kind of donut shop you remember from childhood back to Corona. No shortcuts, no mass production — just fresh dough, real ingredients, and love poured into every batch.</p>
+        <br/>
+        <p class="section-body">We're a family operation, and you'll likely see us behind the counter every single morning. Come for the donuts, stay for the community.</p>
+        <br/>
+        <a href="ds-about.html" class="btn-outline" style="margin-top:8px">Our Story & Team</a>
+      </div>
+    </div>
+  </section>
+
+<!-- FLAVORS PREVIEW -->
+  <section class="flavors-section" id="flavors">
+    <div class="flavors-inner">
+      <div class="flavors-header reveal">
+        <p class="section-label">What We're Making</p>
+        <h2 class="section-title">Today's <em>Flavors</em></h2>
+        <p class="section-body" style="margin:0 auto;text-align:center">Rotating daily — because fresh is always better than predictable.</p>
+      </div>
+      <div class="flavors-grid">
+        <div class="flavor-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#f5e6c8 0%,#e8c87a 50%,#d4a843 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">🍩</div></div>
+          <div class="flavor-name">Classic Glazed</div>
+          <div class="flavor-desc">Light, pillowy, with just the right sweetness.</div>
+          <span class="flavor-tag">Always Available</span>
+        </div>
+        <div class="flavor-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#fce8ed 0%,#f5a0b0 50%,#e8637a 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">🍩</div></div>
+          <div class="flavor-name">Strawberry Sprinkle</div>
+          <div class="flavor-desc">House-made strawberry glaze with rainbow sprinkles.</div>
+          <span class="flavor-tag">Daily Special</span>
+        </div>
+        <div class="flavor-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#3a1020 0%,#6b3f2a 50%,#8b5a3a 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">🍩</div></div>
+          <div class="flavor-name">Chocolate Dream</div>
+          <div class="flavor-desc">Rich chocolate glaze with a fluffy interior.</div>
+          <span class="flavor-tag">Always Available</span>
+        </div>
+        <div class="flavor-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#fffde0 0%,#f5e870 50%,#d4c030 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">🍩</div></div>
+          <div class="flavor-name">Lemon Zest</div>
+          <div class="flavor-desc">Bright citrus glaze with a hint of vanilla.</div>
+          <span class="flavor-tag">Seasonal</span>
+        </div>
+        <div class="flavor-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#c9933a 0%,#d4a843 50%,#f5e6c8 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">🍩</div></div>
+          <div class="flavor-name">Maple Bar</div>
+          <div class="flavor-desc">Warm maple glaze over an old-fashioned bar.</div>
+          <span class="flavor-tag">Weekend Only</span>
+        </div>
+        <div class="flavor-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#fce8ed 0%,#f2c4b0 50%,#e8a090 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">🍩</div></div>
+          <div class="flavor-name">Ask Us Today</div>
+          <div class="flavor-desc">We rotate seasonal creations every morning.</div>
+          <span class="flavor-tag">Rotating</span>
+        </div>
+      </div>
+      <div class="flavors-cta">
+        <a href="ds-menu-donuts.html" class="btn-primary">View Full Donut Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HAPPY HOUR BANNER -->
+  <div class="happy-hour-banner">
+    <div class="happy-hour-inner">
+      <span class="hh-badge">Happy Hour</span>
+      <span class="hh-text"><em>Daily</em> drink specials</span>
+      <span class="hh-time">Every Day · 2:00 pm – 6:00 pm</span>
+    </div>
+  </div>
+
+  <!-- DRINKS PREVIEW -->
+  <section class="drinks-section" id="drinks">
+    <div class="drinks-inner">
+      <div class="drinks-header reveal">
+        <p class="section-label">Sip Something Special</p>
+        <h2 class="section-title">Specialty <em style="color:var(--blush)">Drinks</em></h2>
+        <p class="section-body">Crafted in-house to pair perfectly with your favorite donut.</p>
+      </div>
+      <div class="drinks-grid">
+        <div class="drink-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#e8d5b0 0%,#c9a870 50%,#6b4510 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">☕</div></div>
+          <div class="drink-name">Honey Lavender Latte</div>
+          <div class="drink-desc">Espresso with house lavender syrup and oat milk.</div>
+          <span class="drink-tag">House Specialty</span>
+        </div>
+        <div class="drink-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#3a6b50 0%,#5a9870 50%,#f2c4b0 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">🧋</div></div>
+          <div class="drink-name">Strawberry Matcha</div>
+          <div class="drink-desc">Matcha layered over house strawberry milk, iced.</div>
+          <span class="drink-tag">Fan Favorite</span>
+        </div>
+        <div class="drink-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#3a1020 0%,#6b3f2a 50%,#c9a98a 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">🥤</div></div>
+          <div class="drink-name">Brown Sugar Horchata</div>
+          <div class="drink-desc">Horchata cold brew with cinnamon brown sugar.</div>
+          <span class="drink-tag hh">Happy Hour Deal</span>
+        </div>
+        <div class="drink-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#f2c4b0 0%,#e8904a 50%,#3a1020 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">🥤</div></div>
+          <div class="drink-name">Citrus Cold Brew</div>
+          <div class="drink-desc">Cold brew with orange splash and vanilla cream.</div>
+          <span class="drink-tag hh">Happy Hour Deal</span>
+        </div>
+        <div class="drink-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#fdf6ee 0%,#f5e6c8 50%,#c9a98a 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">🥤</div></div>
+          <div class="drink-name">Classic Horchata</div>
+          <div class="drink-desc">House-made horchata. Cool, sweet, perfectly spiced.</div>
+          <span class="drink-tag">Always Available</span>
+        </div>
+        <div class="drink-card reveal">
+          <div class="card-photo-css" style="background:linear-gradient(160deg,#fce8ed 0%,#f5b8c4 50%,#e8637a 100%);height:160px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.08)"></div><div style="position:relative;text-align:center;font-size:2.5rem;opacity:0.35;line-height:1">✦</div></div>
+          <div class="drink-name">Seasonal Special</div>
+          <div class="drink-desc">Ask us what we're crafting this week.</div>
+          <span class="drink-tag">Rotating</span>
+        </div>
+      </div>
+      <div class="drinks-cta">
+        <a href="ds-menu-drinks.html" class="btn-primary" style="border:1.5px solid var(--blush);background:transparent;color:var(--blush);transition:all 0.25s" onmouseover="this.style.background='var(--rose)';this.style.color='white'" onmouseout="this.style.background='transparent';this.style.color='var(--blush)'">View Full Drinks Menu</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SANDWICHES -->
+  <section class="sandwiches-section" id="sandwiches">
+    <div class="sandwiches-inner">
+      <div class="sandwiches-header reveal">
+        <p class="section-label">Fresh Made to Order</p>
+        <h2 class="section-title">Breakfast <em>Sandwiches</em></h2>
+        <p class="section-body" style="margin:0 auto;text-align:center;opacity:1;font-weight:400">Made fresh every morning alongside our donuts. Real ingredients, real flavor.</p>
+      </div>
+      <div class="sandwich-grid">
+
+        <!-- CROISSANT -->
+        <div class="sandwich-card reveal">
+          <div class="sandwich-card-photo" style="background:linear-gradient(160deg,#fff3d0 0%,#f5d080 50%,#d4a843 100%)">
+            <svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- croissant shape -->
+              <path d="M10 45 Q15 20 40 18 Q65 20 70 45 Q55 35 40 36 Q25 35 10 45Z" fill="#C9933A" opacity="0.9"/>
+              <path d="M15 43 Q20 25 40 23 Q60 25 65 43" stroke="#8B6914" stroke-width="1.5" fill="none" opacity="0.5"/>
+              <!-- shine -->
+              <path d="M22 38 Q30 28 40 27 Q50 28 58 38" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="sandwich-card-title">Croissant Sandwich</div>
+          <ul class="sandwich-items">
+            <li>Ham, Egg &amp; Cheese</li>
+            <li>Bacon, Egg &amp; Cheese</li>
+            <li>Egg &amp; Cheese</li>
+          </ul>
+          <span class="sandwich-tag">Breakfast Favorite</span>
+        </div>
+
+        <!-- BAGEL -->
+        <div class="sandwich-card reveal">
+          <div class="sandwich-card-photo" style="background:linear-gradient(160deg,#f5ebe0 0%,#deb887 50%,#c9933a 100%)">
+            <svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- bagel ring -->
+              <ellipse cx="40" cy="32" rx="28" ry="20" fill="#C9933A" opacity="0.9"/>
+              <ellipse cx="40" cy="32" rx="28" ry="20" fill="none" stroke="#8B6914" stroke-width="1.5" opacity="0.5"/>
+              <!-- hole -->
+              <ellipse cx="40" cy="32" rx="10" ry="7" fill="#f5ebe0"/>
+              <!-- sesame seeds -->
+              <ellipse cx="28" cy="22" rx="2" ry="1" fill="#6B3F2A" transform="rotate(-20,28,22)" opacity="0.7"/>
+              <ellipse cx="38" cy="18" rx="2" ry="1" fill="#6B3F2A" transform="rotate(10,38,18)" opacity="0.7"/>
+              <ellipse cx="50" cy="22" rx="2" ry="1" fill="#6B3F2A" transform="rotate(30,50,22)" opacity="0.7"/>
+              <ellipse cx="54" cy="34" rx="2" ry="1" fill="#6B3F2A" transform="rotate(-10,54,34)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="sandwich-card-title">Bagel</div>
+          <ul class="sandwich-items">
+            <li>Plain Bagel</li>
+            <li>Cream Cheese</li>
+            <li>Everything Between</li>
+          </ul>
+          <span class="sandwich-tag">Classic &amp; Simple</span>
+        </div>
+
+        <!-- SUB / WHOLE GRAIN -->
+        <div class="sandwich-card reveal">
+          <div class="sandwich-card-photo" style="background:linear-gradient(160deg,#f0f5ec 0%,#b8d4a0 50%,#7a9c5a 100%)">
+            <svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- sub bread top -->
+              <path d="M8 28 Q10 16 40 15 Q70 16 72 28 Z" fill="#8B9A5A" opacity="0.9"/>
+              <!-- sub bread bottom -->
+              <rect x="8" y="28" width="64" height="14" rx="4" fill="#7a8c4a" opacity="0.85"/>
+              <!-- filling layers -->
+              <rect x="10" y="28" width="60" height="4" rx="1" fill="#e8d5a0" opacity="0.8"/>
+              <rect x="10" y="32" width="60" height="3" rx="1" fill="#c9b080" opacity="0.7"/>
+              <!-- grain dots on top -->
+              <circle cx="25" cy="22" r="1.5" fill="rgba(255,255,255,0.35)"/>
+              <circle cx="35" cy="19" r="1.5" fill="rgba(255,255,255,0.35)"/>
+              <circle cx="45" cy="19" r="1.5" fill="rgba(255,255,255,0.35)"/>
+              <circle cx="55" cy="22" r="1.5" fill="rgba(255,255,255,0.35)"/>
+            </svg>
+          </div>
+          <div class="sandwich-card-title">Whole Grain Sub</div>
+          <ul class="sandwich-items">
+            <li>Ham Sub</li>
+            <li>Tuna Sub</li>
+            <li>Turkey Sub</li>
+          </ul>
+          <span class="sandwich-tag">Wheat &amp; Whole Grain</span>
+        </div>
+
+      </div>
+      <div style="text-align:center;margin-top:40px">
+        <a href="ds-sandwiches.html" class="btn-primary">View Full Sandwich Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORDER -->
+  <section class="order-section" id="order">
+    <div class="order-inner reveal">
+      <p class="section-label" style="text-align:center">Ready?</p>
+      <h2 class="order-big">Order for<br/><em>pickup</em> today.</h2>
+      <p class="order-note">Call us or stop in — we're ready for you every morning. For <strong>large orders or custom requests</strong>, please give us a heads up at least 48 hours in advance.</p>
+      <p class="order-note" style="margin-bottom:34px">Catering a party? <a href="ds-catering.html" style="color:var(--rose);text-decoration:underline">Visit our catering page</a> — we'd love to be part of it.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a href="tel:+19513716321" class="btn-primary">Call to Order</a>
+        <a href="ds-catering.html" class="btn-outline">Catering</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section class="info-section" id="visit">
+    <div class="info-inner">
+      <div class="reveal">
+        <p class="info-label">Hours</p>
+        <h2 class="info-title">We're open early</h2>
+        <div>
+          <div class="hours-row"><span class="day">Monday – Friday</span><span class="time">5:30 am – 2:00 pm</span></div>
+          <div class="hours-row"><span class="day">Saturday</span><span class="time">5:30 am – 3:00 pm</span></div>
+          <div class="hours-row"><span class="day">Sunday</span><span class="time">6:00 am – 1:00 pm</span></div>
+        </div>
+        <p style="margin-top:18px;font-size:0.78rem;color:var(--blush);opacity:0.42">We often sell out — come early for the best selection!</p>
+      </div>
+      <div class="info-divider"></div>
+      <div class="reveal">
+        <p class="info-label">Find Us</p>
+        <h2 class="info-title">Come visit us</h2>
+        <div class="address-block">
+          <strong>D's Donuts</strong><br/>
+          4300 Green River Rd, Unit 116<br/>
+          Corona, CA 92882<br/><br/>
+          <a href="https://maps.google.com/?q=4300+Green+River+Rd+Unit+116+Corona+CA+92882" target="_blank">Get Directions →</a><br/><br/>
+          <a href="tel:+19513716321">(951) 371-6321</a><br/>
+          <a href="mailto:hello@dsdonuts.com">hello@dsdonuts.com</a><br/><br/>
+          <a href="https://instagram.com" target="_blank">@dsdonuts_corona</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">D's Donuts</div>
+    <div class="footer-sub">ដូណាត់ស្រស់ · Corona, CA</div>
+    <p class="footer-tagline">Cambodian Owned · Family Run · Est. with Love</p>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ds-menu-donuts.html">Donuts</a></li>
+      <li><a href="ds-menu-drinks.html">Drinks</a></li>
+      <li><a href="ds-sandwiches.html">Sandwiches</a></li>
+      <li><a href="ds-catering.html">Catering</a></li>
+      <li><a href="ds-about.html">About Us</a></li>
+      <li><a href="index.html#visit">Visit</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 D's Donuts. Made fresh daily in Corona, CA.</p>
+  </footer>
+
+  <script>
+    const nav=document.getElementById('main-nav');
+    window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>20));
+    document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('mobile-menu').classList.add('open'));
+    document.getElementById('mobile-close').addEventListener('click',()=>document.getElementById('mobile-menu').classList.remove('open'));
+    document.querySelectorAll('.mobile-link').forEach(l=>l.addEventListener('click',()=>document.getElementById('mobile-menu').classList.remove('open')));
+    const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}}),{threshold:0.1});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+  </script>
+</body>
+</html>
